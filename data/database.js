@@ -29,7 +29,7 @@ var DEVS = [
   { n: "Pyro Dino", t: "Combat" },
   { n: "Radiant One", t: "Combat" },
   { n: "Shattered Maiden", t: "Combat" },
-  { n: "Snapshot", t: "Combat" },
+  { n: "ZapCam", t: "Combat" },
   { n: "Snowsprite", t: "Combat" },
   { n: "Soul Summoner", t: "Combat" },
   { n: "Voodoo Doll", t: "Combat" },
