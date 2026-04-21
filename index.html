@@ -172,6 +172,11 @@
 
     <!-- Deviation inventory grid -->
     <div class="sh"><h2>DEVIATION INVENTORY</h2><div class="sl2"></div></div>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+  <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; EXPORT XLSX</button>
+  <button class="btn btn-sm"       onclick="triggerImport()">&#8593; IMPORT XLSX</button>
+  <input type="file" id="xlsx-import-input" accept=".xlsx" style="display:none" onchange="handleImportFile(event)">
+</div>
     <div class="fbar mb12">
       <input type="text" id="inv-srch" placeholder="Search" style="width:180px" oninput="renderInv()">
       <select id="inv-flt" style="width:120px" onchange="renderInv()">
@@ -365,6 +370,7 @@
 
 
 <!-- ════════ SCRIPTS (order matters) ════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="data/database.js"></script>
 <script src="js/state.js"></script>
 <script src="js/ui.js"></script>
@@ -372,6 +378,7 @@
 <script src="js/fusion.js"></script>
 <script src="js/blueprint.js"></script>
 <script src="js/encyclopedia.js"></script>
+<script src="js/exportimport.js"></script>
 <script>
   // ════════ INIT ════════
   mkStars('sk-skill', 3, function(v) { selSkill = v; });
