@@ -44,6 +44,7 @@ var DEVS = [
   { n: "Whalepup", t: "Combat" },
   { n: "Zeno-Purifier", t: "Combat" },
   { n: "Brave George", t: "Combat" },
+  { n: "Zapcam", t: "Combat" },
 
   // Territory
   { n: "Berserkosaurus Rex", t: "Territory" },
@@ -89,8 +90,7 @@ var DEVS = [
   { n: "Snow Globe", t: "Crafting" },
   { n: "Space Turner", t: "Crafting" },
   { n: "Strange Door", t: "Crafting" },
-  { n: "Upper World Spawn", t: "Crafting" },
-  { n: "Zapcam", t: "Crafting" }
+  { n: "Upper World Spawn", t: "Crafting" }
 ];
 
 
@@ -314,7 +314,7 @@ var TRAITS = [
   { s:2, n:"Marine Star (By-The-Wind)",    d:"When synced, each reload gives either 5% Weapon DMG or 5% Status DMG at random.", cat:"Variation", type:"variation", src:"By the Wind", vfor:"By the Wind", typeReq:"Combat" },
 
   // ── SLOT 2 — LUNAR ORACLE VARIATIONS (Combat) ────────────────────────────
-  { s:2, n:"Lunar Oracle (Zapcam)",              d:"Weapon DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Zapcam",              vfor:"Zapcam",              typeReq:"Crafting" },
+  { s:2, n:"Lunar Oracle (Zapcam)",              d:"Weapon DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Zapcam",              vfor:"Zapcam",              typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Lonewolf)",            d:"Weapon DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Lonewolf's Whisper",  vfor:"Lonewolf's Whisper",  typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Festering Gel)",       d:"Restores 1 Deviant Power every 8s, 1.5 if sanity below 30%",                       cat:"Variation", type:"variation", src:"Festering Gel",       vfor:"Festering Gel",       typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Snowsprite)",          d:"Status DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Snowsprite",          vfor:"Snowsprite",          typeReq:"Combat" },
