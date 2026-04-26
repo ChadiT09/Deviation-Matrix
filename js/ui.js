@@ -132,6 +132,12 @@ function pickDev(which, name, type) {
     selBpDev = DEVS.find(function(d) { return d.n === name; });
     document.getElementById('bp-val-display').value = name;
     document.getElementById('bp-dd-panel').classList.remove('open');
+    // Clear trait slots when deviation changes so old traits don't persist
+    [10, 11, 12].forEach(function(i) {
+      bpTVals[i - 10] = null;
+      var el = document.getElementById('t-disp-' + i);
+      if (el) el.value = '';
+    });
   } else if (which === 'ndev') {
     document.getElementById('ndev-val-display').value = name;
     document.getElementById('ndev-dd-panel').classList.remove('open');

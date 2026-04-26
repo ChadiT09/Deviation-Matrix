@@ -17,7 +17,15 @@ function genBP() {
     .filter(function(d) { return !parentA || d.id !== parentA.id; })
     .sort(function(x, y) { return (y.skill + y.activity) - (x.skill + x.activity); })[0];
 
-  var traitSources = bpTVals.filter(Boolean).map(function(t) {
+  // Read traits from display fields — always in sync with what user sees
+  var traitNames = [10, 11, 12].map(function(i) {
+    var el = document.getElementById('t-disp-' + i);
+    return el && el.value.trim() || null;
+  }).filter(Boolean);
+
+  var traitInfos = traitNames.map(function(n) { return getTraitInfo(n); }).filter(Boolean);
+
+  var traitSources = traitInfos.map(function(t) {
     var isA = t.cat === 'Animal', isF = t.cat === 'Furniture';
     var donor = null;
     if (isA || isF) {
@@ -27,17 +35,17 @@ function genBP() {
         donor = { name: def.name, have: cnt, need: 1, isMat: true, def: def };
       }
     } else {
-      donor = inv.find(function(d) {
+      var donDev = inv.find(function(d) {
         return d.traits.indexOf(t.n) >= 0 && d.species !== sp;
       });
-      if (donor) donor = { name: donor.name, have: 1, need: 1, isMat: false };
+      if (donDev) donor = { name: donDev.name, have: 1, need: 1, isMat: false };
     }
     return { trait: t.n, info: t, donor: donor, isA: isA, isF: isF };
   });
 
   var html = '';
 
-  // Shopping list — all needed materials with proximity indicators
+  // Shopping list
   if (traitSources.length) {
     html += '<div class="rb"><h3>SHOPPING LIST</h3>';
     html += '<div style="font-size:11px;color:var(--td);margin-bottom:10px">What you need to acquire before fusion:</div>';
@@ -57,7 +65,16 @@ function genBP() {
         '<div class="pt"><div class="pf ' + cls + '" style="width:' + pct + '%"></div></div>' +
         '<div class="pp" style="font-size:10px">' + have + '/' + need + '</div></div>';
 
-      var donorName = ts.donor ? ts.donor.name : (isA || isF ? 'Any ' + (isA ? 'Animal' : 'Furniture') + ' with trait' : 'A deviation with ' + ts.trait);
+      var donorName;
+      if (ts.donor) {
+        donorName = ts.donor.name;
+      } else if (ts.isA) {
+        donorName = 'Any Animal with trait';
+      } else if (ts.isF) {
+        donorName = 'Any Furniture with trait';
+      } else {
+        donorName = 'A deviation with ' + ts.trait;
+      }
       html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-top:1px solid var(--bd);font-size:10px">' +
         '<span style="font-family:var(--mono);color:var(--tm)">' + donorName + '</span>' +
         status +
