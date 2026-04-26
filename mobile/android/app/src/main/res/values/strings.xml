@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Deviation Matrix</string>
+    <string name="title_activity_main">Deviation Matrix</string>
+    <string name="package_name">com.oncehuman.deviationmatrix</string>
+    <string name="custom_url_scheme">com.oncehuman.deviationmatrix</string>
+</resources>
