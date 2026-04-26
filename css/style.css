@@ -412,3 +412,25 @@ select option { background: #071525; }
 .mb16 { margin-bottom: 16px; }
 .mt12 { margin-top: 12px; }
 .mb10 { margin-bottom: 10px; }
+
+/* ════════ NOTIFICATION BUTTON ════════ */
+.notif-btn {
+  background: transparent;
+  border: 1px solid var(--bd);
+  color: var(--td);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  transition: all .15s;
+  border-radius: 2px;
+}
+.notif-btn:hover { border-color: var(--c); color: var(--c); }
+.notif-btn.on    { border-color: var(--cg); color: var(--cg); }
+
+/* ════════ UNDO BUTTON ════════ */
+.btn-und { border-color: rgba(255,179,0,.4); color: var(--ca); }
+.btn-und:hover { background: rgba(255,179,0,.09); }
+
+/* ════════ SHARE BUTTON ════════ */
+.btn-sh  { border-color: rgba(189,0,255,.4); color: var(--cp); }
+.btn-sh:hover { background: rgba(189,0,255,.09); }

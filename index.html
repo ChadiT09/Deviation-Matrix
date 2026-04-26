@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070c12">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><polygon points='13,2 22,7 22,19 13,24 4,19 4,7' stroke='%2300f5ff' stroke-width='2' fill='none'/><circle cx='13' cy='13' r='4' fill='%2300f5ff'/></svg>">
 <title>Deviation Matrix — Once Human Fusion Intelligence</title>
 <meta name="description" content="Once Human Deviation Fusion Simulator, Inventory Tracker, and Trait Encyclopedia">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><polygon points='13,2 22,7 22,19 13,24 4,19 4,7' stroke='%2300f5ff' stroke-width='2' fill='none'/><circle cx='13' cy='13' r='4' fill='%2300f5ff'/></svg>">
@@ -30,6 +35,7 @@
     <p>ONCE HUMAN // FUSION INTELLIGENCE v4.3</p>
   </div>
   <div class="hs">
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()" title="Toggle notifications">&#128276;</button>
     <div class="sd"><div class="dot g"></div>ONLINE</div>
     <div class="sd" id="ic"><div class="dot a"></div>0 DEV</div>
     <div class="sd" id="fuse-mini" style="display:none">
@@ -169,6 +175,7 @@
   <div style="display:flex;gap:8px;margin-bottom:12px">
     <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; EXPORT XLSX</button>
     <button class="btn btn-sm" onclick="triggerImport()">&#8593; IMPORT XLSX</button>
+    <button class="btn btn-sm btn-sh" onclick="shareBuild()">&#10047; SHARE BUILD</button>
     <input type="file" id="xlsx-import-input" accept=".xlsx" style="display:none" onchange="handleImportFile(event)">
   </div>
   <div class="fbar mb12">
@@ -222,6 +229,7 @@
     <div style="display:flex;flex-direction:column;gap:6px">
       <button class="btn btn-p btn-sm" id="t-btn" onclick="toggleTimer()">START</button>
       <button class="btn btn-sm" onclick="resetTimer()">RESET</button>
+      <button class="btn btn-sm btn-und" id="undo-btn" onclick="undoFusion()" style="display:none">UNDO</button>
     </div>
   </div>
 
@@ -381,6 +389,7 @@
   renderMatCounters();
   save();
   renderEnc();
+  requestNotifPermission();
 
   // ▼ CHANGE 1E: Only open non-closed bodies on init
   document.querySelectorAll('.collapse-body:not(.closed)').forEach(function(b) {

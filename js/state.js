@@ -10,6 +10,83 @@
 var inv       = JSON.parse(localStorage.getItem('oh4_inv')  || '[]');
 var matCounts = JSON.parse(localStorage.getItem('oh4_matc') || '{}');
 
+// ════════ FUSION SNAPSHOT (undo support) ════════
+var fusionSnapshot = null;
+
+function takeFusionSnapshot() {
+  fusionSnapshot = {
+    inv:         JSON.parse(JSON.stringify(inv)),
+    matCounts:   JSON.parse(JSON.stringify(matCounts)),
+    matSlotsF:   JSON.parse(JSON.stringify(matSlotsF)),
+    timerRem:    timerRem,
+    timerRunning: timerRunning
+  };
+}
+
+function undoFusion() {
+  if (!fusionSnapshot) { alert('No fusion to undo.'); return; }
+  if (!confirm('Undo last fusion? This will restore your inventory to before the fusion was started.')) return;
+  inv         = fusionSnapshot.inv;
+  matCounts   = fusionSnapshot.matCounts;
+  matSlotsF   = fusionSnapshot.matSlotsF;
+  timerRem    = fusionSnapshot.timerRem;
+  timerRunning = false;
+  clearInterval(timerInt);
+  save();
+  renderInv();
+  renderMatCounters();
+  popFusion();
+  renderMatSlotsUI();
+  document.getElementById('t-btn').textContent  = 'START';
+  document.getElementById('t-stat').textContent = 'Ready to fuse';
+  document.getElementById('fuse-mini').style.display = 'none';
+  updateTimerUI();
+  fusionSnapshot = null;
+  alert('Fusion undone. Inventory restored.');
+}
+
+// ════════ SHARE / LINK SYNC ════════
+function getShareableLink() {
+  var payload = {
+    inv:       inv,
+    matCounts: matCounts
+  };
+  var encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+  var baseUrl = window.location.origin + window.location.pathname;
+  return baseUrl + '?data=' + encoded;
+}
+
+function loadFromLink() {
+  var params = new URLSearchParams(window.location.search);
+  var data   = params.get('data');
+  if (!data) return false;
+  try {
+    var decoded = JSON.parse(decodeURIComponent(atob(data)));
+    if (decoded.inv)       inv       = decoded.inv;
+    if (decoded.matCounts) matCounts = decoded.matCounts;
+    save();
+    renderInv();
+    renderMatCounters();
+    return true;
+  } catch (e) {
+    console.warn('Failed to load shared data:', e);
+    return false;
+  }
+}
+
+function shareBuild() {
+  var link = getShareableLink();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(function() {
+      alert('Shareable link copied to clipboard!');
+    }).catch(function() {
+      prompt('Copy this link:', link);
+    });
+  } else {
+    prompt('Copy this link:', link);
+  }
+}
+
 // ════════ EPHEMERAL UI STATE ════════
 var selSkill    = 3;
 var selAct      = 3;

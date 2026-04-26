@@ -12,6 +12,57 @@
  */
 
 
+// ════════ NOTIFICATIONS ════════
+var notifEnabled = localStorage.getItem('oh4_notif') === '1';
+
+function requestNotifPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+  updateNotifBtn();
+}
+
+function toggleNotif() {
+  notifEnabled = !notifEnabled;
+  updateNotifBtn();
+  localStorage.setItem('oh4_notif', notifEnabled ? '1' : '0');
+}
+
+function updateNotifBtn() {
+  var btn = document.getElementById('notif-btn');
+  if (!btn) return;
+  if (!('Notification' in window)) {
+    btn.style.display = 'none';
+    return;
+  }
+  if (Notification.permission === 'granted' && notifEnabled) {
+    btn.classList.add('on');
+  } else {
+    btn.classList.remove('on');
+  }
+}
+
+function showFusionNotif() {
+  if (!notifEnabled) { playDoneSound(); return; }
+  var notifSupported = 'Notification' in window;
+  if (notifSupported && Notification.permission === 'granted') {
+    try {
+      new Notification('Fusion Complete!', {
+        body: 'Your 5-minute fusion timer has finished. Tap to log your offspring.',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26"><polygon points="13,2 22,7 22,19 13,24 4,19 4,7" stroke="%2300f5ff" stroke-width="2" fill="none"/><circle cx="13" cy="13" r="4" fill="%2300f5ff"/></svg>',
+        tag: 'fusion-complete',
+        requireInteraction: true
+      }).onclick = function() {
+        window.focus();
+        document.querySelector('.tb:nth-child(2)').click();
+      };
+    } catch (e) { playDoneSound(); }
+  } else {
+    playDoneSound();
+  }
+}
+
+
 // ════════ TIMER ════════
 function fmt(s) {
   var m = Math.floor(s / 60), sc = s % 60;
@@ -29,7 +80,7 @@ function updateTimerUI() {
     document.getElementById('t-btn').textContent  = 'START';
     document.getElementById('t-stat').textContent = 'Fusion complete!';
     document.getElementById('fuse-mini').style.display = 'none';
-    playDoneSound();
+    showFusionNotif();
     destroyAfterFusion();
     showNewDevModal();
   }
@@ -75,6 +126,28 @@ function resetTimer() {
   document.getElementById('t-btn').textContent  = 'START';
   document.getElementById('t-stat').textContent = 'Ready to fuse';
   document.getElementById('fuse-mini').style.display = 'none';
+}
+
+function undoFusion() {
+  if (!fusionSnapshot) { alert('No fusion to undo.'); return; }
+  if (!confirm('Undo last fusion? This will restore your inventory to before the fusion was started.')) return;
+  inv         = fusionSnapshot.inv;
+  matCounts   = fusionSnapshot.matCounts;
+  matSlotsF   = JSON.parse(JSON.stringify([null, null, null]));
+  timerRem    = 300;
+  timerRunning = false;
+  clearInterval(timerInt);
+  save();
+  renderInv();
+  renderMatCounters();
+  popFusion();
+  renderMatSlotsUI();
+  document.getElementById('t-btn').textContent  = 'START';
+  document.getElementById('t-stat').textContent = 'Ready to fuse';
+  document.getElementById('fuse-mini').style.display = 'none';
+  updateTimerUI();
+  fusionSnapshot = null;
+  alert('Fusion undone. Inventory restored.');
 }
 
 
@@ -291,9 +364,17 @@ function calcFusion() {
     var filteredInputs = allInputs.map(function(inp, idx) {
       var validTraits = inp.traits.filter(function(t) {
         if (!t) return false;
+        // Variant traits: only valid for their own species
         if (t.vfor && t.vfor !== outcomeSpecies) return false;
+        // Slot 1: always valid
         if (t.s === 1) return true;
-        if (t.s === 3) return true;
+        // Slot 3: Animal/Furniture traits branch by outcome type
+        if (t.s === 3) {
+          if (t.cat === 'Animal' && outcomeType !== 'Combat') return false;
+          if (t.cat === 'Furniture' && outcomeType === 'Combat') return false;
+          return true;
+        }
+        // Slot 2: type-specific traits
         if (t.s === 2) {
           if (t.typeReq && t.typeReq !== outcomeType) return false;
           if (t.cat !== 'Variation' && ['Combat','Territory','Crafting'].indexOf(t.cat) >= 0 &&
@@ -309,7 +390,7 @@ function calcFusion() {
     var categories = [
       { name: 'GENERAL (Slot 1)',           slot: 1 },
       { name: outcomeType.toUpperCase() + ' (Slot 2)', slot: 2 },
-      { name: 'DEVIATED (Slot 3)',          slot: 3 }
+      { name: 'DEVIATED (Slot 3)' + (outcomeType !== 'Combat' ? ' [Furniture Branch]' : ' [Animal Branch]'), slot: 3 }
     ];
     var catResults = [];
     categories.forEach(function(cat) {
