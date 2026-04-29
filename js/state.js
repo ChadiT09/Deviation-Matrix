@@ -119,7 +119,14 @@ function getDev(id) {
 }
 
 function getTraitInfo(n) {
-  return TRAITS.find(function(t) { return t.n === n; });
+  var exact = TRAITS.find(function(t) { return t.n === n; });
+  if (exact) return exact;
+  // Partial match: strip parenthetical / bracketed suffix
+  // e.g. "Starfall Inversion (Mini Wonder)" → "Starfall Inversion"
+  var bare = n.replace(/\s*[\(\【\[].*$/, '').trim();
+  return TRAITS.find(function(t) {
+    return t.n === bare || t.n.startsWith(bare + ' (') || t.n.startsWith(bare + ' -');
+  });
 }
 
 function getType(n) {
