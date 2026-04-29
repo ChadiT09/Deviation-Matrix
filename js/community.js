@@ -12,7 +12,7 @@ var COMM_DATA = [
   ['SS','Invincible Sun',   ['Power Rewind 2','Starfall Inversion','Moonlight Assault']],
   ['SS','Polar Jelly',      ['Power Rewind 2','Starfall Inversion','Moonlight Assault']],
   ['SS','Voodoo Doll',      ['Power Rewind 2 / Fluffy Curse','Psychic Kid / Crack Shot','Moonlight Assault']],
-  ['SS','Zapcam',           ['Lunar Oracle','Crack Shot','Moonlight Assault']],
+  ['SS','ZapCam',           ['Lunar Oracle','Crack Shot','Moonlight Assault']],
   ['S','Brave George',      ['Power Rewind 2','Psychic Kid / Crack Shot','Moonlight Assault']],
   ['S',"Butterfly's Emissary",['Power Rewind 2','Weakspot Master','Moonlight Assault']],
   ['S','Mr. Wish',          ['Power Rewind 2','Crack Shot','Chaos','Moonlight Assault']],
