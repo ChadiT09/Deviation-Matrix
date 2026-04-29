@@ -45,6 +45,7 @@ var DEVS = [
   { n: "Zeno-Purifier", t: "Combat" },
   { n: "Brave George", t: "Combat" },
   { n: "Zapcam", t: "Combat" },
+  { n: "Zapamander", t: "Combat" },
 
   // Territory
   { n: "Berserkosaurus Rex", t: "Territory" },
@@ -77,6 +78,7 @@ var DEVS = [
   { n: "Atomic Lighter", t: "Crafting" },
   { n: "Atomic Snail", t: "Crafting" },
   { n: "Disco Ball", t: "Crafting" },
+  { n: "Doctor Raven", t: "Territory" },
   { n: "Dreamcatcher", t: "Crafting" },
   { n: "Frog the Leaper", t: "Crafting" },
   { n: "Gingerbread House", t: "Crafting" },
@@ -234,6 +236,12 @@ var TRAITS = [
 
   // ── SLOT 1 — DR. TEDDY VARIATIONS ───────────────────────────────────────
   { s:1, n:"Infrasonic Illusion (Dr. Teddy)", d:"Energy Recovery Speed +20%",               cat:"Variation", type:"variation", src:"Dr. Teddy",           vfor:"Dr. Teddy" },
+  { s:1, n:"Christmas Spirit (Chefosaurus Rx)", d:"The appearance of the Deviation has changed. Max Deviant Power +10%, Deviant Power recovery speed +5%.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex" },
+  { s:2, n:"Christmas Spirit (Chefosaurus Rx)", d:"The appearance of the Deviation has changed. Max Deviant Power +10%, Deviant Power recovery speed +5%.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex", typeReq:"Combat" },
+  { s:1, n:"Aberrant Progeny (Dr. Teddy)",       d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Dr. Teddy", vfor:"Dr. Teddy" },
+  { s:2, n:"Aberrant Progeny (Dr. Teddy)",       d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Dr. Teddy", vfor:"Dr. Teddy", typeReq:"Combat" },
+  { s:1, n:"Aberrant Progeny (Chefosaurus Rx)",  d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex" },
+  { s:2, n:"Aberrant Progeny (Chefosaurus Rx)",  d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex", typeReq:"Combat" },
 
   // ── SLOT 1 — MINI WONDER VARIATIONS ──────────────────────────────────────
   { s:1, n:"Bursting Magma (Mini Wonder)", d:"Max Mood +35",                                cat:"Variation", type:"variation", src:"Mini Wonder",         vfor:"Mini Wonder" },
