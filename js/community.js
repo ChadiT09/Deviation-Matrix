@@ -9,7 +9,7 @@ var communityTab = 'All';
 
 // ─═══ META'S DEV ─═══
 var COMM_DATA = [
-  ['SS','Invincible Sun',   ['Power Rewind 2','Starfall Inversion','Moonlight Assault [Wolf]']],
+  ['SS','Invincible Sun',   ['Power Rewind 2','Starfall Inversion','Moonlight Assault']],
   ['SS','Polar Jelly',      ['Power Rewind 2','Starfall Inversion','Moonlight Assault']],
   ['SS','Voodoo Doll',      ['Power Rewind 2 / Fluffy Curse','Psychic Kid / Crack Shot','Moonlight Assault']],
   ['SS','ZapCam',           ['Lunar Oracle','Crack Shot','Moonlight Assault']],
