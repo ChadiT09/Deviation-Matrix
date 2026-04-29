@@ -437,7 +437,9 @@
   /* ── Auto-launch on first visit ──────────────────────────── */
   window.addEventListener('DOMContentLoaded', () => {
     addLaunchButton();
-    if (!localStorage.getItem('dm_tour_done')) {
+    // Start tour only if explicitly requested via URL param or first visit with no data
+    if (!localStorage.getItem('dm_tour_done') && !location.search.includes('tour')) {
+      // Only start tour on the inventory tab, not on direct deep links
       setTimeout(startTour, 600);
     }
   });
