@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#070c12">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><polygon points='13,2 22,7 22,19 13,24 4,19 4,7' stroke='%2300f5ff' stroke-width='2' fill='none'/><circle cx='13' cy='13' r='4' fill='%2300f5ff'/></svg>">
-<title>Deviation Matrix — Once Human</title>
+<title>Deviation Matrix — Once Human Fusion Intelligence</title>
 <meta name="description" content="Once Human Deviation Fusion Simulator, Inventory Tracker, and Trait Encyclopedia">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><polygon points='13,2 22,7 22,19 13,24 4,19 4,7' stroke='%2300f5ff' stroke-width='2' fill='none'/><circle cx='13' cy='13' r='4' fill='%2300f5ff'/></svg>">
-<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -31,12 +32,12 @@
   </div>
   <div class="ht">
     <h1>DEVIATION MATRIX</h1>
-    <p>ONCE HUMAN // FUSION INTELLIGENCE</p>
+    <p>ONCE HUMAN // FUSION INTELLIGENCE v4.3</p>
   </div>
   <div class="hs">
-    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()" title="Notifications">&#128276;</button>
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()" title="Toggle notifications">&#128276;</button>
     <div class="sd"><div class="dot g"></div>ONLINE</div>
-    <div class="sd" id="ic"><div class="dot a"></div><span id="dev-count">0</span> DEV</div>
+    <div class="sd" id="ic"><div class="dot a"></div>0 DEV</div>
     <div class="sd" id="fuse-mini" style="display:none">
       <div class="dot c"></div><span id="mini-t">5:00</span> FUSING
     </div>
@@ -45,18 +46,10 @@
 
 <!-- ════ NAV ════ -->
 <div class="nav">
-  <button class="tb act" id="tab-btn-inv" onclick="sw('inventory',this)">INVENTORY</button>
-  <button class="tb" id="tab-btn-fus" onclick="sw('fusion',this)">FUSION SIM</button>
-  <button class="tb" id="tab-btn-bp" onclick="sw('blueprint',this)">BLUEPRINT</button>
-  <button class="tb" id="tab-btn-enc" onclick="sw('encyclopedia',this)">TRAIT ENC.</button>
-</div>
-
-<!-- ════ MOBILE BOTTOM NAV ════ -->
-<div class="bnav">
-  <button class="bnb act" onclick="sw('inventory',document.getElementById('tab-btn-inv'))">&#9678; INV</button>
-  <button class="bnb" onclick="sw('fusion',document.getElementById('tab-btn-fus'))">&#9678; FUSE</button>
-  <button class="bnb" onclick="sw('blueprint',document.getElementById('tab-btn-bp'))">&#9678; BP</button>
-  <button class="bnb" onclick="sw('encyclopedia',document.getElementById('tab-btn-enc'))">&#9678; ENC</button>
+  <button class="tb act" onclick="sw('inventory',this)">INVENTORY</button>
+  <button class="tb" onclick="sw('fusion',this)">FUSION SIM</button>
+  <button class="tb" onclick="sw('blueprint',this)">BLUEPRINT</button>
+  <button class="tb" onclick="sw('encyclopedia',this)">TRAIT ENC.</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -68,12 +61,13 @@
 
   <div class="gc mb16">
     <div class="fg mb12">
+      <!-- Species dropdown -->
       <div class="fgr">
-        <label>DEVIATION</label>
+        <label>DEVIATION (species)</label>
         <div class="dd-wrap">
           <div class="dd-input" onclick="openDD('dev')">
-            <input type="text" id="dev-val-display" placeholder="Search deviation" readonly>
-            <span class="dd-arrow">&#9660;</span>
+            <input type="text" id="dev-val-display" placeholder="Search deviation" readonly style="cursor:pointer">
+            <span class="dd-arrow">&#x25BC;</span>
           </div>
           <div class="dd-panel" id="dev-dd-panel">
             <div class="dd-search"><input type="text" id="dev-dd-search" placeholder="Type to search..." oninput="renderDevDD()"></div>
@@ -83,12 +77,14 @@
         </div>
       </div>
       <div class="fgr">
-        <label>NICKNAME</label>
+        <label>NICKNAME (optional)</label>
         <input type="text" id="i-name" placeholder="e.g. Voodoo #3">
       </div>
       <div class="fgr">
-        <label>TYPE</label>
-        <div id="i-type-display" style="padding:7px 11px;background:rgba(0,18,32,.7);border:1px solid var(--bd);color:var(--td);font-size:12px;border-radius:2px">select first</div>
+        <label>TYPE (auto)</label>
+        <div id="i-type-display" style="padding:7px 11px;background:rgba(0,18,32,.7);border:1px solid var(--bd);color:var(--td);font-size:12px;border-radius:2px">
+          select deviation first
+        </div>
       </div>
       <div class="fgr">
         <label>FUSES</label>
@@ -104,13 +100,14 @@
       <div class="fgr"><label>ACTIVITY</label> <div class="ss" id="sk-act"></div></div>
     </div>
 
+    <!-- Trait slots -->
     <div class="mb12">
       <div style="font-size:10px;color:var(--td);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;font-weight:500">TRAITS (up to 3)</div>
       <div style="display:flex;flex-direction:column;gap:7px">
         <div class="dd-wrap">
           <div class="dd-input" onclick="openTraitDD(0)">
-            <input type="text" id="t-disp-0" placeholder="Slot 1" readonly>
-            <span class="dd-arrow">&#9660;</span>
+            <input type="text" id="t-disp-0" placeholder="Slot 1 — General/Variation" readonly style="cursor:pointer">
+            <span class="dd-arrow">&#x25BC;</span>
           </div>
           <div class="dd-panel" id="trait-panel-0">
             <div class="dd-search"><input type="text" id="t-srch-0" placeholder="Search" oninput="renderTraitDD(0)"></div>
@@ -120,8 +117,8 @@
         </div>
         <div class="dd-wrap">
           <div class="dd-input" onclick="openTraitDD(1)">
-            <input type="text" id="t-disp-1" placeholder="Slot 2" readonly>
-            <span class="dd-arrow">&#9660;</span>
+            <input type="text" id="t-disp-1" placeholder="Slot 2 — Combat/Territory/Crafting" readonly style="cursor:pointer">
+            <span class="dd-arrow">&#x25BC;</span>
           </div>
           <div class="dd-panel" id="trait-panel-1">
             <div class="dd-search"><input type="text" id="t-srch-1" placeholder="Search" oninput="renderTraitDD(1)"></div>
@@ -131,8 +128,8 @@
         </div>
         <div class="dd-wrap">
           <div class="dd-input" onclick="openTraitDD(2)">
-            <input type="text" id="t-disp-2" placeholder="Slot 3" readonly>
-            <span class="dd-arrow">&#9660;</span>
+            <input type="text" id="t-disp-2" placeholder="Slot 3 — Deviated (Animal/Furniture)" readonly style="cursor:pointer">
+            <span class="dd-arrow">&#x25BC;</span>
           </div>
           <div class="dd-panel" id="trait-panel-2">
             <div class="dd-search"><input type="text" id="t-srch-2" placeholder="Search" oninput="renderTraitDD(2)"></div>
@@ -147,57 +144,82 @@
     <button class="btn btn-p" onclick="addDev()">+ ADD TO INVENTORY</button>
   </div>
 
+  <!-- Animals & Furniture counters -->
   <div class="sh"><h2>ANIMALS &amp; FURNITURE</h2><div class="sl2"></div></div>
+  <div style="font-size:11px;color:var(--td);margin-bottom:10px">
+    Track your livestock and furniture for fusion materials. These grant Slot 3 (Deviated) traits.
+  </div>
+
+  <!-- ▼ CHANGE 1: "open" class removed from arrow; "closed" class added to body -->
   <div class="collapse-hdr" onclick="toggleCollapse('animals-body',this)">
-    <span class="collapse-arrow">&#9654;</span>
+    <span class="collapse-arrow">&#x25B6;</span>
     <h2 style="font-family:'Orbitron',monospace;font-size:10px;font-weight:600;color:var(--ca);letter-spacing:.1em">ANIMALS</h2>
     <div class="sl2"></div>
   </div>
   <div id="animals-body" class="collapse-body closed">
     <div id="animal-counters" style="border:1px solid var(--bd);margin-bottom:12px"></div>
   </div>
+
   <div class="collapse-hdr" onclick="toggleCollapse('furniture-body',this)">
-    <span class="collapse-arrow">&#9654;</span>
+    <span class="collapse-arrow">&#x25B6;</span>
     <h2 style="font-family:'Orbitron',monospace;font-size:10px;font-weight:600;color:var(--cp);letter-spacing:.1em">FURNITURE</h2>
     <div class="sl2"></div>
   </div>
   <div id="furniture-body" class="collapse-body closed">
     <div id="furniture-counters" style="border:1px solid var(--bd);margin-bottom:16px"></div>
   </div>
+  <!-- ▲ END CHANGE 1 -->
 
+  <!-- Deviation inventory grid -->
   <div class="sh"><h2>DEVIATION INVENTORY</h2><div class="sl2"></div></div>
-  <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-    <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; EXPORT</button>
-    <button class="btn btn-sm" onclick="triggerImport()">&#8593; IMPORT</button>
-    <button class="btn btn-sm btn-sh" onclick="shareBuild()">&#10047; SHARE</button>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; XLSX</button>
+    <button class="btn btn-sm" onclick="triggerImport()">&#8593; XLSX</button>
+    <button class="btn btn-sm" onclick="exportToJSON()">&#8595; JSON</button>
+    <button class="btn btn-sm" onclick="triggerJSONImport()">&#8593; JSON</button>
+    <button class="btn btn-sm btn-sh" onclick="showBuildCode()">&#10047; CODE</button>
     <input type="file" id="xlsx-import-input" accept=".xlsx" style="display:none" onchange="handleImportFile(event)">
+    <input type="file" id="json-import-input" accept=".json" style="display:none" onchange="handleImportJSON(event)">
   </div>
   <div class="fbar mb12">
-    <input type="text" id="inv-srch" placeholder="Search" style="width:140px" oninput="renderInv()">
-    <select id="inv-flt" style="width:100px" onchange="renderInv()">
+    <input type="text" id="inv-srch" placeholder="Search" style="width:180px" oninput="renderInv()">
+    <select id="inv-flt" style="width:120px" onchange="renderInv()">
       <option value="all">All Types</option>
       <option value="Combat">Combat</option>
       <option value="Territory">Territory</option>
       <option value="Crafting">Crafting</option>
     </select>
-    <select id="inv-fuse" style="width:110px" onchange="renderInv()">
+    <select id="inv-fuse" style="width:130px" onchange="renderInv()">
       <option value="all">All</option>
       <option value="1">Has Fuse</option>
-      <option value="0">Fodder</option>
+      <option value="0">Fodder Only</option>
+    </select>
+    <select id="inv-sk" style="width:100px" onchange="renderInv()">
+      <option value="all">Skill:Any</option>
+      <option value="5">5</option><option value="4">4</option>
+      <option value="3">3</option><option value="2">2</option><option value="1">1</option>
+    </select>
+    <select id="inv-ac" style="width:100px" onchange="renderInv()">
+      <option value="all">Act:Any</option>
+      <option value="5">5</option><option value="4">4</option>
+      <option value="3">3</option><option value="2">2</option><option value="1">1</option>
     </select>
   </div>
   <div id="inv-grid" class="ig"></div>
+
 </div><!-- /tab-inventory -->
 
 <!-- ════════════════════════════════════════════════════════════
      TAB: FUSION SIM
 ════════════════════════════════════════════════════════════ -->
 <div id="tab-fusion" class="pn">
+
   <div class="sh"><h2>FUSION SIMULATOR</h2><div class="sl2"></div></div>
 
+  <!-- Timer -->
   <div class="tbox mb16">
     <div>
-      <div class="tlab">FUSION TIMER</div>
+      <div class="tlab">FUSION COUNTDOWN (5 min)</div>
       <div class="tdis" id="t-disp">5:00</div>
       <div style="font-size:11px;color:var(--td)" id="t-stat">Ready to fuse</div>
     </div>
@@ -207,49 +229,60 @@
         <span>0:00</span><span>5:00</span>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:5px">
+    <div style="display:flex;flex-direction:column;gap:6px">
       <button class="btn btn-p btn-sm" id="t-btn" onclick="toggleTimer()">START</button>
       <button class="btn btn-sm" onclick="resetTimer()">RESET</button>
       <button class="btn btn-sm btn-und" id="undo-btn" onclick="undoFusion()" style="display:none">UNDO</button>
     </div>
   </div>
 
+  <!-- Parent selects -->
   <div class="fl mb16">
     <div>
       <div class="fgr mb10">
-        <label>LEFT PARENT <span style="font-size:9px;color:var(--td)">(uses fuse)</span></label>
-        <select id="f-a" onchange="calcFusion()"><option value="">-- Select --</option></select>
+        <label>LEFT PARENT (uses fuse, becomes Fodder)</label>
+        <select id="f-a" onchange="calcFusion()" style="font-size:12px"><option value="">-- Select --</option></select>
       </div>
       <div id="fa-prev"></div>
     </div>
     <div class="fvs">&times;</div>
     <div>
       <div class="fgr mb10">
-        <label>RIGHT PARENT <span style="font-size:9px;color:var(--td)">(destroyed)</span></label>
-        <select id="f-b" onchange="calcFusion()"><option value="">-- Select --</option></select>
+        <label>RIGHT PARENT (destroyed)</label>
+        <select id="f-b" onchange="calcFusion()" style="font-size:12px"><option value="">-- Select --</option></select>
       </div>
       <div id="fb-prev"></div>
     </div>
   </div>
 
-  <div class="sh"><h2>MATERIALS</h2><div class="sl2"></div></div>
-  <div style="font-size:11px;color:var(--td);margin-bottom:10px">All materials destroyed after fusion. Materials with no valid traits become "Clean" (+10% each).</div>
+  <!-- Material slots -->
+  <div class="sh"><h2>MIDDLE TUBE MATERIALS (up to 3)</h2><div class="sl2"></div></div>
+  <div style="font-size:11px;color:var(--td);margin-bottom:10px">
+    <span style="color:var(--cd)">All materials are destroyed</span> after fusion.
+    Materials matching parent species shift species odds.
+    Materials with desired traits increase trait pass-down odds.
+    Materials with no valid traits for the outcome type become "Clean" (+10% each to non-competing trait odds).
+    All 3 slots share the same RNG weight.
+  </div>
   <div id="mat-slots" class="mb16"></div>
   <div id="fusion-res"></div>
+
 </div><!-- /tab-fusion -->
 
 <!-- ════════════════════════════════════════════════════════════
      TAB: BLUEPRINT
 ════════════════════════════════════════════════════════════ -->
 <div id="tab-blueprint" class="pn">
+
   <div class="sh"><h2>BLUEPRINT ARCHITECT</h2><div class="sl2"></div></div>
   <div class="bps mb16">
+    <!-- Target deviation -->
     <div class="fgr">
-      <label>TARGET</label>
+      <label>TARGET DEVIATION</label>
       <div class="dd-wrap">
         <div class="dd-input" onclick="openDD('bp')">
-          <input type="text" id="bp-val-display" placeholder="Select" readonly>
-          <span class="dd-arrow">&#9660;</span>
+          <input type="text" id="bp-val-display" placeholder="Select target" readonly style="cursor:pointer">
+          <span class="dd-arrow">&#x25BC;</span>
         </div>
         <div class="dd-panel" id="bp-dd-panel">
           <div class="dd-search"><input type="text" id="bp-dd-search" placeholder="Search" oninput="renderDevDD('bp')"></div>
@@ -258,14 +291,16 @@
         </div>
       </div>
     </div>
-    <div class="fgr"><label>SKILL</label>    <div class="ss" id="bp-sk"></div></div>
-    <div class="fgr"><label>ACTIVITY</label> <div class="ss" id="bp-ac"></div></div>
+    <div class="fgr"><label>TARGET SKILL</label>    <div class="ss" id="bp-sk"></div></div>
+    <div class="fgr"><label>TARGET ACTIVITY</label> <div class="ss" id="bp-ac"></div></div>
+
+    <!-- Desired traits -->
     <div class="fgr">
-      <label>TRAIT 1</label>
+      <label>DESIRED TRAIT 1</label>
       <div class="dd-wrap">
         <div class="dd-input" onclick="openTraitDD(10)">
-          <input type="text" id="t-disp-10" placeholder="Trait 1" readonly>
-          <span class="dd-arrow">&#9660;</span>
+          <input type="text" id="t-disp-10" placeholder="Trait 1" readonly style="cursor:pointer">
+          <span class="dd-arrow">&#x25BC;</span>
         </div>
         <div class="dd-panel" id="trait-panel-10">
           <div class="dd-search"><input type="text" id="t-srch-10" placeholder="Search" oninput="renderTraitDD(10)"></div>
@@ -275,11 +310,11 @@
       </div>
     </div>
     <div class="fgr">
-      <label>TRAIT 2</label>
+      <label>DESIRED TRAIT 2</label>
       <div class="dd-wrap">
         <div class="dd-input" onclick="openTraitDD(11)">
-          <input type="text" id="t-disp-11" placeholder="Trait 2" readonly>
-          <span class="dd-arrow">&#9660;</span>
+          <input type="text" id="t-disp-11" placeholder="Trait 2" readonly style="cursor:pointer">
+          <span class="dd-arrow">&#x25BC;</span>
         </div>
         <div class="dd-panel" id="trait-panel-11">
           <div class="dd-search"><input type="text" id="t-srch-11" placeholder="Search" oninput="renderTraitDD(11)"></div>
@@ -289,11 +324,11 @@
       </div>
     </div>
     <div class="fgr">
-      <label>TRAIT 3</label>
+      <label>DESIRED TRAIT 3</label>
       <div class="dd-wrap">
         <div class="dd-input" onclick="openTraitDD(12)">
-          <input type="text" id="t-disp-12" placeholder="Trait 3" readonly>
-          <span class="dd-arrow">&#9660;</span>
+          <input type="text" id="t-disp-12" placeholder="Trait 3" readonly style="cursor:pointer">
+          <span class="dd-arrow">&#x25BC;</span>
         </div>
         <div class="dd-panel" id="trait-panel-12">
           <div class="dd-search"><input type="text" id="t-srch-12" placeholder="Search" oninput="renderTraitDD(12)"></div>
@@ -304,20 +339,23 @@
     </div>
   </div>
 
-  <button class="btn btn-p mb16" style="width:100%" onclick="genBP()">GENERATE BLUEPRINT</button>
+  <button class="btn btn-p mb16" onclick="genBP()">GENERATE BLUEPRINT</button>
   <div id="bp-out"></div>
+
 </div><!-- /tab-blueprint -->
 
 <!-- ════════════════════════════════════════════════════════════
      TAB: ENCYCLOPEDIA
 ════════════════════════════════════════════════════════════ -->
 <div id="tab-encyclopedia" class="pn">
+
   <div class="sh"><h2>TRAIT ENCYCLOPEDIA</h2><div class="sl2"></div></div>
-  <input type="text" id="enc-s" placeholder="Search traits..." style="margin-bottom:10px" oninput="renderEnc()">
+  <input type="text" id="enc-s" placeholder="Search traits, sources, effects" style="margin-bottom:12px" oninput="renderEnc()">
   <div class="eg">
     <div class="esb" id="enc-cats"></div>
     <div class="ecn" id="enc-con"></div>
   </div>
+
 </div><!-- /tab-encyclopedia -->
 
 </div><!-- /app -->
@@ -330,18 +368,22 @@
   </div>
 </div>
 
-<!-- ════════ SCRIPTS ════════ -->
-<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script type="module" src="data/database.js"></script>
-<script type="module" src="js/state.js"></script>
-<script type="module" src="js/ui.js"></script>
-<script type="module" src="js/inventory.js"></script>
-<script type="module" src="js/fusion.js"></script>
-<script type="module" src="js/blueprint.js"></script>
-<script type="module" src="js/encyclopedia.js"></script>
-<script type="module" src="js/exportimport.js"></script>
-<script type="module" src="js/onboarding.js"></script>
+<!-- ════════ SCRIPTS (order matters) ════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="data/database.js"></script>
+<script src="js/state.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/fusion.js"></script>
+<script src="js/blueprint.js"></script>
+<script src="js/encyclopedia.js"></script>
+<script src="js/exportimport.js"></script>
+
+<!-- ▼ CHANGE 2: Onboarding walkthrough -->
+<script src="js/onboarding.js"></script>
+
 <script>
+  // ════════ INIT ════════
   mkStars('sk-skill', 3, function(v) { selSkill = v; });
   mkStars('sk-act',   3, function(v) { selAct   = v; });
   mkStars('bp-sk',    5, function(v) { bpSk     = v; });
@@ -351,8 +393,8 @@
   save();
   renderEnc();
   requestNotifPermission();
-  loadFromLink();
-  updateNotifBtn();
+
+  // ▼ CHANGE 1E: Only open non-closed bodies on init
   document.querySelectorAll('.collapse-body:not(.closed)').forEach(function(b) {
     b.style.maxHeight = '2000px';
   });

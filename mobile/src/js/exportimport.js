@@ -150,3 +150,84 @@ function handleImportFile(event) {
   };
   reader.readAsArrayBuffer(file);
 }
+
+// ════════ JSON EXPORT ════════
+function exportToJSON() {
+  var data = {
+    version: 1,
+    exported: new Date().toISOString(),
+    inventory: inv,
+    materials: matCounts
+  };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'deviation-matrix-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function triggerJSONImport() {
+  document.getElementById('json-import-input').click();
+}
+
+function handleImportJSON(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (data.inventory) inv = data.inventory;
+      if (data.materials) matCounts = data.materials;
+      save();
+      renderInv();
+      renderMatCounters();
+      alert('JSON import successful! ' + (data.inventory ? data.inventory.length : 0) + ' deviations loaded.');
+    } catch(err) {
+      alert('JSON import failed: ' + err.message);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ════════ BUILD CODE (compact Base64) ════════
+function showBuildCode() {
+  var data = {
+    v: 1,
+    i: inv,
+    m: matCounts
+  };
+  var code = btoa(encodeURIComponent(JSON.stringify(data)));
+  
+  document.getElementById('modal-body').innerHTML =
+    '<h3>BUILD CODE</h3>' +
+    '<p style="font-size:12px;color:var(--td);margin-bottom:10px">Copy this code to share or save your inventory. Paste it below to restore.</p>' +
+    '<textarea id="build-code-ta" style="width:100%;height:100px;background:rgba(0,18,32,.9);border:1px solid var(--bd);color:var(--c);font-family:var(--mono);font-size:11px;padding:8px;border-radius:2px;resize:none" readonly onclick="this.select();document.execCommand(\'copy\');this.nextSibling.nextSibling.style.display=\'block\'">' + code + '</textarea>' +
+    '<div id="copy-confirm" style="display:none;font-size:11px;color:var(--cg);margin-top:4px">Copied!</div>' +
+    '<div style="margin-top:12px">' +
+      '<input type="text" id="load-code-input" placeholder="Paste code here to load..." style="width:100%;margin-bottom:8px">' +
+      '<button class="btn btn-p btn-sm" onclick="loadBuildCode()">LOAD CODE</button>' +
+    '</div>' +
+    '<button class="btn btn-sm" onclick="closeModalDirect()" style="margin-top:12px">CLOSE</button>';
+  document.getElementById('modal-overlay').style.display = 'flex';
+}
+
+function loadBuildCode() {
+  var code = document.getElementById('load-code-input').value.trim();
+  if (!code) { alert('Paste a build code first.'); return; }
+  try {
+    var data = JSON.parse(decodeURIComponent(atob(code)));
+    if (data.i) inv = data.i;
+    if (data.m) matCounts = data.m;
+    save();
+    renderInv();
+    renderMatCounters();
+    closeModalDirect();
+    alert('Build code loaded successfully!');
+  } catch(err) {
+    alert('Invalid build code: ' + err.message);
+  }
+}
