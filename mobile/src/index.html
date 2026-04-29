@@ -50,6 +50,7 @@
   <button class="tb" onclick="sw('fusion',this)">FUSION SIM</button>
   <button class="tb" onclick="sw('blueprint',this)">BLUEPRINT</button>
   <button class="tb" onclick="sw('encyclopedia',this)">TRAIT ENC.</button>
+  <button class="tb" onclick="sw('userdata',this)">META'S DEV</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -358,6 +359,42 @@
 
 </div><!-- /tab-encyclopedia -->
 
+<!-- ════════════════════════════════════════════════════════════
+     TAB: COMMUNITY
+════════════════════════════════════════════════════════════ -->
+<div id="tab-meta" class="pn">
+
+  <div class="sh"><h2>META'S DEV</h2><div class="sl2"></div></div>
+
+  <div class="comm-notice">
+    <div class="wb"><div class="wi">&#128276;</div><div class="wt">Combat tier list from community spreadsheet. Territory & Crafting coming soon!</div></div>
+  </div>
+
+  <input type="text" id="meta-s" placeholder="Search deviations or traits..." style="margin-bottom:12px" oninput="renderMetaDev()">
+
+  <div id="meta-tier-bar"></div>
+  <div id="meta-con"></div>
+
+</div><!-- /tab-meta -->
+
+<div id="tab-userdata" class="pn">
+
+  <div class="sh"><h2>META'S DEV </h2><div class="sl2"></div></div>
+
+  <div class="comm-notice">
+    <div class="wb">
+      <div class="wi">&#128276;</div>
+      <div class="wt">Combat tier list from community spreadsheet. Territory & Crafting coming soon!</div>
+    </div>
+  </div>
+
+  <input type="text" id="comm-s" placeholder="Search deviations or traits..." style="margin-bottom:12px" oninput="renderCommunity()">
+
+  <div id="comm-tier-bar"></div>
+  <div id="comm-con"></div>
+
+</div><!-- /tab-community -->
+
 </div><!-- /app -->
 
 <!-- ════════ MODAL ════════ -->
@@ -378,9 +415,11 @@
 <script src="js/blueprint.js"></script>
 <script src="js/encyclopedia.js"></script>
 <script src="js/exportimport.js"></script>
+<script src="js/community.js"></script>
 
 <!-- ▼ CHANGE 2: Onboarding walkthrough -->
 <script src="js/onboarding.js"></script>
+<script src="js/community.js"></script>
 
 <script>
   // ════════ INIT ════════

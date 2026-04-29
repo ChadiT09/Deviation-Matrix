@@ -18,10 +18,12 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 
 | Tab | What it does |
 |-----|-------------|
-| **Inventory** | Log your Deviations with species, nickname, skill/activity stars, traits, fuses, and notes. Track Animals & Furniture counts for Slot 3 materials. Export/import via XLSX, JSON, or shareable code. |
+| **Inventory** | Log your Deviations with species, nickname, skill/activity stars, traits, fuses, and notes. Track Animals & Furniture counts for Slot 3 materials. Export/import via XLSX. |
 | **Fusion Sim** | Select two parents + up to 3 middle-tube materials. Live calculation of species odds, stat ranges, and per-slot trait odds (Scenario A/B/C + Clean buff). Includes a 5-minute countdown timer with browser/haptic notifications that auto-consumes parents and materials on completion. |
 | **Blueprint** | Pick a target species + desired traits. Generates a fusion path diagram with a shopping list showing which inventory deviations or materials can supply each trait — with ready/missing/progress indicators. |
 | **Trait Enc.** | Full searchable encyclopedia of all traits — filterable by category and deviation, with slot, source, and description. |
+| **Meta's Dev** | Community-sourced tier list for Combat deviations (SS → D ranks). Shows recommended trait builds, flags missing traits, and lets you jump directly to the Blueprint tab with one click. |
+| **User Data** | Export your full inventory to JSON, import from JSON backup, share fusion builds via compact code, and load shared build codes. |
 
 ### Mobile Extras
 - **Push notifications** when the 5-minute fusion timer completes (even if the app is in the background)
