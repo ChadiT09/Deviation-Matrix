@@ -121,12 +121,16 @@ function getDev(id) {
 function getTraitInfo(n) {
   var exact = TRAITS.find(function(t) { return t.n === n; });
   if (exact) return exact;
-  // Partial match: strip parenthetical / bracketed suffix
-  // e.g. "Starfall Inversion (Mini Wonder)" → "Starfall Inversion"
-  //      "Moonlight Assault [Wolf]"          → "Moonlight Assault"
-  var bare = n.replace(/\s*[\(\【\[].*$/, '').trim();
+  // Partial match: strip parenthetical / bracketed / dash-based suffix
+  // e.g. "Moonlight Assault [Wolf]" → "Moonlight Assault"
+  // e.g. "Lunar Oracle (Zapcam)" → "Lunar Oracle"
+  var bare = n.replace(/\s*[\(\[\[].*$/, '').replace(/\s+-\s+.*$/, '').trim().toLowerCase();
   return TRAITS.find(function(t) {
-    return t.n === bare || t.n.startsWith(bare + ' (') || t.n.startsWith(bare + ' -') || t.n.startsWith(bare + ' [');
+    if (t.n.toLowerCase() === bare) return true;
+    var tn = t.n.toLowerCase();
+    return tn.startsWith(bare + ' (') ||
+           tn.startsWith(bare + ' [') ||
+           tn.startsWith(bare + ' - ');
   });
 }
 
