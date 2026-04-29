@@ -10,7 +10,7 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 👉 [DeviationMatrix-android.apk](https://zo.pub/tester009/dm-apk/DeviationMatrix-android.apk) (4.0 MB)
 
 **Web app** — works in any browser, no install needed:  
-👉 [deviation-matrix.vercel.app](https://deviation-matrix.vercel.app)
+👉 [[deviation-matrix.vercel.app](https://chadit09.github.io/Deviation-Matrix/)]([https://deviation-matrix.vercel.app](https://chadit09.github.io/Deviation-Matrix/))
 
 ---
 
