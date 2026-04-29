@@ -468,6 +468,4 @@ var TRAITS = [
   { s:4, n:"Chaos Mr. Wish",    d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Mr. Wish" },
   { s:4, n:"Chaos Snowsprite",  d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Snowsprite" },
   { s:4, n:"Chaos Cat",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Scenario",       vfor:"Extradimensional Cat" },
-  { s:4, n:"Chaos Cat",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Scenario",       vfor:"Extradimensional Cat" },
-  { s:4, n:"Chaos Cat",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Scenario",       vfor:"Extradimensional Cat" },
 ];
