@@ -123,9 +123,10 @@ function getTraitInfo(n) {
   if (exact) return exact;
   // Partial match: strip parenthetical / bracketed suffix
   // e.g. "Starfall Inversion (Mini Wonder)" → "Starfall Inversion"
+  //      "Moonlight Assault [Wolf]"          → "Moonlight Assault"
   var bare = n.replace(/\s*[\(\【\[].*$/, '').trim();
   return TRAITS.find(function(t) {
-    return t.n === bare || t.n.startsWith(bare + ' (') || t.n.startsWith(bare + ' -');
+    return t.n === bare || t.n.startsWith(bare + ' (') || t.n.startsWith(bare + ' -') || t.n.startsWith(bare + ' [');
   });
 }
 
