@@ -434,3 +434,97 @@ select option { background: #071525; }
 /* ════════ SHARE BUTTON ════════ */
 .btn-sh  { border-color: rgba(189,0,255,.4); color: var(--cp); }
 .btn-sh:hover { background: rgba(189,0,255,.09); }
+
+/* ════════ COMMUNITY TAB ════════ */
+.comm-notice { margin-bottom: 14px; }
+
+.tier-filter-bar {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.tf-btn {
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .08em;
+  border: 1px solid var(--bd);
+  background: transparent;
+  color: var(--td);
+  transition: all .18s;
+  clip-path: polygon(4px 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+.tf-btn:hover  { border-color: var(--c); color: var(--c); }
+.tf-btn.act    { border-color: var(--c); color: #050a0f; background: var(--c); }
+.tf-count      { opacity: .6; font-size: 9px; }
+
+.comm-stats {
+  display: flex; gap: 16px; margin-bottom: 16px;
+  background: var(--bgc); border: 1px solid var(--bd);
+  padding: 12px 16px; border-radius: 2px;
+}
+.cs-item { text-align: center; }
+.cs-val  { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: var(--c); }
+.cs-lbl  { font-size: 9px; color: var(--td); letter-spacing: .1em; margin-top: 2px; }
+
+.tier-hdr {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Orbitron', monospace; font-size: 10px;
+  color: var(--td); letter-spacing: .1em;
+  margin: 18px 0 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--bd);
+}
+.tier-hdr:first-of-type { margin-top: 0; }
+
+.tier-badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 10px; font-weight: 700;
+  border-radius: 2px; letter-spacing: .05em;
+}
+.tier-badge.tier-ss { background: rgba(255,215,0,.15); color: #ffd700; border: 1px solid rgba(255,215,0,.4); }
+.tier-badge.tier-s  { background: rgba(189,0,255,.15); color: var(--cp);   border: 1px solid rgba(189,0,255,.4); }
+.tier-badge.tier-a  { background: rgba(0,245,255,.1);   color: var(--c);    border: 1px solid rgba(0,245,255,.3); }
+.tier-badge.tier-b  { background: rgba(57,255,20,.1);  color: var(--cg);   border: 1px solid rgba(57,255,20,.3); }
+.tier-badge.tier-c  { background: rgba(255,179,0,.1);  color: var(--ca);   border: 1px solid rgba(255,179,0,.3); }
+.tier-badge.tier-d  { background: rgba(200,230,245,.05);color: var(--td);  border: 1px solid var(--bd); }
+
+.comm-card {
+  border: 1px solid var(--bd);
+  background: var(--bgc);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  position: relative;
+  transition: border-color .18s;
+}
+.comm-card:hover { border-color: var(--bm); }
+.comm-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.comm-card.tier-ss::before { background: linear-gradient(90deg, #ffd700, transparent); }
+.comm-card.tier-s::before  { background: linear-gradient(90deg, var(--cp), transparent); }
+.comm-card.tier-a::before  { background: linear-gradient(90deg, var(--c), transparent); }
+.comm-card.tier-b::before  { background: linear-gradient(90deg, var(--cg), transparent); }
+.comm-card.tier-c::before  { background: linear-gradient(90deg, var(--ca), transparent); }
+.comm-card.tier-d::before  { background: linear-gradient(90deg, transparent, transparent); }
+
+.comm-card-name {
+  font-family: 'Orbitron', monospace; font-size: 12px;
+  font-weight: 600; color: var(--c); margin-bottom: 4px;
+}
+.comm-tier-badge-sm {
+  position: absolute; top: 10px; right: 12px;
+  font-size: 9px; font-family: 'Orbitron', monospace;
+  font-weight: 700; padding: 1px 7px;
+  border-radius: 2px; letter-spacing: .05em;
+}
+.comm-tier-badge-sm { background: rgba(0,245,255,.1); color: var(--c); border: 1px solid rgba(0,245,255,.3); }
+.comm-traits { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 6px; }
+.comm-footer { font-size: 10px; font-family: var(--mono); margin-top: 4px; }
+.dev-avail { color: var(--cg); }
+.dev-miss  { color: var(--ca); }
+
+.tt.unknown {
+  border-color: rgba(255,45,120,.3); color: var(--cd);
+  background: rgba(255,45,120,.05);
+  padding: 2px 7px; font-size: 9px; font-family: var(--mono);
+  border: 1px solid; display: inline-block; border-radius: 2px; cursor: default;
+}

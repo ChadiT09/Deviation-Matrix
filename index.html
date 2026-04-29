@@ -50,6 +50,7 @@
   <button class="tb" onclick="sw('fusion',this)">FUSION SIM</button>
   <button class="tb" onclick="sw('blueprint',this)">BLUEPRINT</button>
   <button class="tb" onclick="sw('encyclopedia',this)">TRAIT ENC.</button>
+  <button class="tb" onclick="sw('community',this)">COMMUNITY</button>
 </div>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -358,6 +359,27 @@
 
 </div><!-- /tab-encyclopedia -->
 
+<!-- ════════════════════════════════════════════════════════════
+     TAB: COMMUNITY
+════════════════════════════════════════════════════════════ -->
+<div id="tab-community" class="pn">
+
+  <div class="sh"><h2>COMMUNITY SUGGESTIONS</h2><div class="sl2"></div></div>
+
+  <div class="comm-notice">
+    <div class="wb">
+      <div class="wi">&#128276;</div>
+      <div class="wt">Combat tier list from community spreadsheet. Territory & Crafting coming soon!</div>
+    </div>
+  </div>
+
+  <input type="text" id="comm-s" placeholder="Search deviations or traits..." style="margin-bottom:12px" oninput="renderCommunity()">
+
+  <div id="comm-tier-bar"></div>
+  <div id="comm-con"></div>
+
+</div><!-- /tab-community -->
+
 </div><!-- /app -->
 
 <!-- ════════ MODAL ════════ -->
@@ -381,6 +403,7 @@
 
 <!-- ▼ CHANGE 2: Onboarding walkthrough -->
 <script src="js/onboarding.js"></script>
+<script src="js/community.js"></script>
 
 <script>
   // ════════ INIT ════════
