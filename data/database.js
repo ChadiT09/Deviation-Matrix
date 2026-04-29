@@ -45,7 +45,7 @@ var DEVS = [
   { n: "Whalepup", t: "Combat" },
   { n: "Zeno-Purifier", t: "Combat" },
   { n: "Brave George", t: "Combat" },
-  { n: "Zapcam", t: "Combat" },
+  { n: "ZapCam", t: "Combat" },
   { n: "Zapamander", t: "Combat" },
 
   // Territory
