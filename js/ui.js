@@ -66,8 +66,7 @@ function sw(name, el) {
 
   if (name === 'fusion')      { popFusion(); renderMatSlotsUI(); }
   if (name === 'encyclopedia') { renderEnc(); }
-  if (name === 'userdata') { renderUserData(); }
-  if (name === 'meta')     { renderMetaDev(); }
+  if (name === 'meta') { renderMetaDev(); }
   if (name === 'blueprint') {
     mkStars('bp-sk', bpSk, function(v) { bpSk = v; });
     mkStars('bp-ac', bpAc, function(v) { bpAc = v; });
