@@ -173,10 +173,13 @@
   <!-- Deviation inventory grid -->
   <div class="sh"><h2>DEVIATION INVENTORY</h2><div class="sl2"></div></div>
   <div style="display:flex;gap:8px;margin-bottom:12px">
-    <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; EXPORT XLSX</button>
-    <button class="btn btn-sm" onclick="triggerImport()">&#8593; IMPORT XLSX</button>
-    <button class="btn btn-sm btn-sh" onclick="shareBuild()">&#10047; SHARE BUILD</button>
+    <button class="btn btn-p btn-sm" onclick="exportToXLSX()">&#8595; XLSX</button>
+    <button class="btn btn-sm" onclick="triggerImport()">&#8593; XLSX</button>
+    <button class="btn btn-sm" onclick="exportToJSON()">&#8595; JSON</button>
+    <button class="btn btn-sm" onclick="triggerJSONImport()">&#8593; JSON</button>
+    <button class="btn btn-sm btn-sh" onclick="showBuildCode()">&#10047; CODE</button>
     <input type="file" id="xlsx-import-input" accept=".xlsx" style="display:none" onchange="handleImportFile(event)">
+    <input type="file" id="json-import-input" accept=".json" style="display:none" onchange="handleImportJSON(event)">
   </div>
   <div class="fbar mb12">
     <input type="text" id="inv-srch" placeholder="Search" style="width:180px" oninput="renderInv()">

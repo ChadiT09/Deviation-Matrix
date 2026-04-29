@@ -20,6 +20,7 @@ var DEVS = [
   // Combat
   { n: "Butterfly's Emissary", t: "Combat" },
   { n: "By the Wind", t: "Combat" },
+  { n: "By-the-Wind", t: "Territory" },
   { n: "Dr. Teddy", t: "Combat" },
   { n: "Enchanting Void", t: "Combat" },
   { n: "Enchanting Void - Starfall Inversion", t: "Combat" },
@@ -466,5 +467,10 @@ var TRAITS = [
   { s:4, n:"Chaosaurus",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Pyro Dino" },
   { s:4, n:"Chaos Mr. Wish",    d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Mr. Wish" },
   { s:4, n:"Chaos Snowsprite",  d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Snowsprite" },
-  { s:4, n:"Chaos Cat",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Scenario",       vfor:"Extradimensional Cat" }
+  { s:4, n:"Chaos Cat",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Scenario",       vfor:"Extradimensional Cat" }  { s:1, n:"Moonlight Assault", d:"Variants", cat:"Combat", type:"variation", src:"All deviations via Starfall Inversion event" },
+  { s:2, n:"Lunar Oracle", d:"Combat", cat:"Combat", type:"variation", src:"Zapcam, Pyro Dino, Snowsprite, Lonewolf's Whisper, Zeno-Purifier" },
+  { s:2, n:"Weakspot Master", d:"Combat", cat:"Combat", type:"variation", src:"Butterfly's Emissary" },
+  { s:2, n:"Marine Star", d:"Combat", cat:"Combat", type:"variation", src:"Festering Gel" },
+  { s:1, n:"Starfall Inversion", d:"Variation", cat:"Combat", type:"variation", src:"Invincible Sun, Polar Jelly, Mini Feaster" },
+
 ];
