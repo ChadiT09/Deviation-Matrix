@@ -1,6 +1,6 @@
 /**
  * data/database.js
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  * Static game data for Once Human — Deviation Matrix tool.
  * Contains three datasets:
  *   DEVS      — all playable Deviation species (name + type)
@@ -12,10 +12,10 @@
  * typeReq can now be a string OR an array of strings for multi-type traits:
  *   typeReq: "Combat"                → only Combat
  *   typeReq: ["Territory","Crafting"] → Territory and Crafting
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  */
 
-// ════════ DEVIATION SPECIES ════════
+// ======== DEVIATION SPECIES ========
 var DEVS = [
   // Combat
   { n: "Butterfly's Emissary", t: "Combat" },
@@ -97,7 +97,7 @@ var DEVS = [
 ];
 
 
-// ════════ ANIMAL & FURNITURE MATERIAL DEFINITIONS ════════
+// ======== ANIMAL & FURNITURE MATERIAL DEFINITIONS ========
 var MAT_DEFS = [
   // Animals
   { id: "bear",      name: "Bear",             kind: "Animal",    trait: "Brute Force Rules [Bear]",         d: "Dodge shatters ores/trees. 10% double output." },
@@ -123,16 +123,16 @@ var MAT_DEFS = [
 ];
 
 
-// ════════ TRAIT DATABASE ════════
+// ======== TRAIT DATABASE ========
 // Fields: s = slot (1=General, 2=Type-specific, 3=Deviated, 4=Chaos/Special)
 //         n = name,  d = description,  cat = category
 //         type = positive | negative | mixed | variation
 //         src = source,  vfor = variation-specific deviation,  typeReq = required dev type (string or array)
 var TRAITS = [
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 1 — GENERAL ──────────────────────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 1 — GENERAL ------------------------------------------------------
+  // ===========================================================================
   { s:1, n:"Upper Hand",     d:"When Deviant Power drops to 0, automatically consume All Mood to recover All Deviant Power.", cat:"General", type:"positive", src:"Any" },
   { s:1, n:"Stable Energy",  d:"Max Deviant Power +30",    cat:"General", type:"positive", src:"Any" },
   { s:1, n:"Stable Vitality",d:"Max Mood +30",             cat:"General", type:"positive", src:"Any" },
@@ -164,26 +164,26 @@ var TRAITS = [
   { s:1, n:"Feeling Blue 1",   d:"Max Mood -5%",                      cat:"General", type:"negative", src:"Any" },
   { s:1, n:"Feeling Blue 2",   d:"Max Mood -10%",                      cat:"General", type:"negative", src:"Any" },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 1 — FESTERING GEL VARIATIONS ─────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 1 — FESTERING GEL VARIATIONS -------------------------------------
+  // ===========================================================================
   { s:1, n:"Milk Sugar",          d:"Max Mood +35%",                                      cat:"Variation", type:"variation", src:"Festering Gel",   vfor:"Festering Gel" },
 
-  // ── SLOT 1 — BUTTERFLY'S EMISSARY VARIATIONS ─────────────────────────────
+  // -- SLOT 1 — BUTTERFLY'S EMISSARY VARIATIONS -----------------------------
   { s:1, n:"Ancient Scroll",      d:"Max Energy +40%",                                    cat:"Variation", type:"variation", src:"Butterfly's Emissary", vfor:"Butterfly's Emissary" },
 
-  // ── SLOT 1 — FETCH-A-LOT VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — FETCH-A-LOT VARIATIONS --------------------------------------
   { s:1, n:"Aquarius",            d:"Mood Recovery Speed +30%",                            cat:"Variation", type:"variation", src:"Fetch-A-Lot Bunny",   vfor:"Fetch-A-Lot Bunny" },
   { s:1, n:"Gluttonous Bunny",    d:"Energy Recovery Speed +15%",                          cat:"Variation", type:"variation", src:"Fetch-A-Lot Bunny",   vfor:"Fetch-A-Lot Bunny" },
 
-  // ── SLOT 1 — GRUMPY BULB VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — GRUMPY BULB VARIATIONS --------------------------------------
   { s:1, n:"Violet Robe",         d:"Max Energy +40%",                                    cat:"Variation", type:"variation", src:"Grumpy Bulb",         vfor:"Grumpy Bulb" },
 
-  // ── SLOT 1 — GROWSHROOM VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — GROWSHROOM VARIATIONS ---------------------------------------
   { s:1, n:"Shadow Shroom",       d:"Max Energy +40%",                                    cat:"Variation", type:"variation", src:"Growshroom",          vfor:"Growshroom" },
   { s:1, n:"Optimism - Extra Large", d:"Max Mood +40%",                                   cat:"Variation", type:"variation", src:"Growshroom",          vfor:"Growshroom" },
 
-  // ── SLOT 1 — NUTCRACKER VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — NUTCRACKER VARIATIONS ---------------------------------------
   { s:1, n:"Infrasonic Illusion (Nutcracker)", d:"Max Mood +35",                           cat:"Variation", type:"variation", src:"Nutcracker",          vfor:"Nutcracker" },
   { s:1, n:"Deep Purple",         d:"Mood Recovery Speed +30%",                            cat:"Variation", type:"variation", src:"Nutcracker",          vfor:"Nutcracker" },
   { s:1, n:"Green Field",         d:"Energy Max Limit increased by 10",                    cat:"Variation", type:"variation", src:"Nutcracker",          vfor:"Nutcracker" },
@@ -196,46 +196,46 @@ var TRAITS = [
   { s:1, n:"Date Brown",          d:"Max Mood +7%",                                        cat:"Variation", type:"variation", src:"Nutcracker",          vfor:"Nutcracker" },
   { s:1, n:"Stable Vitality - Golden Era", d:"Max Mood +35",                               cat:"Variation", type:"variation", src:"Nutcracker",          vfor:"Nutcracker" },
 
-  // ── SLOT 1 — EXTRADIMENSIONAL CAT VARIATIONS ─────────────────────────────
+  // -- SLOT 1 — EXTRADIMENSIONAL CAT VARIATIONS -----------------------------
   { s:1, n:"Optimism - Good Fortune", d:"Max Mood +40%",                                   cat:"Variation", type:"variation", src:"Extradimensional Cat", vfor:"Extradimensional Cat" },
 
-  // ── SLOT 1 — DIGBY BOY VARIATIONS ────────────────────────────────────────
+  // -- SLOT 1 — DIGBY BOY VARIATIONS ----------------------------------------
   { s:1, n:"Emerald",             d:"Energy Recovery Speed +10%",                           cat:"Variation", type:"variation", src:"The Digby Boy",       vfor:"The Digby Boy" },
   { s:1, n:"Fortune Dice",        d:"Max Deviant Power +6%",                                cat:"Variation", type:"variation", src:"The Digby Boy",       vfor:"The Digby Boy" },
 
-  // ── SLOT 1 — BUZZY BEE VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — BUZZY BEE VARIATIONS ---------------------------------------
   { s:1, n:"Radiant Flourish",    d:"Max Mood +8%",                                        cat:"Variation", type:"variation", src:"Buzzy Bee",           vfor:"Buzzy Bee" },
   { s:1, n:"Pumpkin Lantern",     d:"Max Deviant Power +10%",                               cat:"Variation", type:"variation", src:"Buzzy Bee",           vfor:"Buzzy Bee" },
 
-  // ── SLOT 1 — ENCHANTING VOID VARIATIONS ──────────────────────────────────
+  // -- SLOT 1 — ENCHANTING VOID VARIATIONS ----------------------------------
   { s:1, n:"Pharaoh",             d:"Mood Recovery Speed +30%",                             cat:"Variation", type:"variation", src:"Enchanting Void",     vfor:"Enchanting Void" },
 
-  // ── SLOT 1 — LONEWOLF'S WHISPER VARIATIONS ───────────────────────────────
+  // -- SLOT 1 — LONEWOLF'S WHISPER VARIATIONS -------------------------------
   { s:1, n:"Bursting Magma (Lonewolf)", d:"Max Energy +40%",                                cat:"Variation", type:"variation", src:"Lonewolf's Whisper",  vfor:"Lonewolf's Whisper" },
   { s:1, n:"Distant Tears",       d:"Max Energy +40%",                                     cat:"Variation", type:"variation", src:"Lonewolf's Whisper",  vfor:"Lonewolf's Whisper" },
   { s:1, n:"Radiant Variant (Lonewolf)", d:"Max Mood +7%",                                  cat:"Variation", type:"variation", src:"Lonewolf's Whisper",  vfor:"Lonewolf's Whisper" },
 
-  // ── SLOT 1 — BY-THE-WIND VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — BY-THE-WIND VARIATIONS --------------------------------------
   { s:1, n:"Bursting Magma (By-The-Wind)", d:"Energy Recovery Speed +10%",                  cat:"Variation", type:"variation", src:"By the Wind",         vfor:"By the Wind" },
   { s:1, n:"Frigid Touch",        d:"Energy Recovery Speed +15%",                           cat:"Variation", type:"variation", src:"By the Wind",         vfor:"By the Wind" },
 
-  // ── SLOT 1 — SHATTERED MAIDEN VARIATIONS ─────────────────────────────────
+  // -- SLOT 1 — SHATTERED MAIDEN VARIATIONS ---------------------------------
   { s:1, n:"Wandering Witch",     d:"Max Deviant Power +10%",                               cat:"Variation", type:"variation", src:"Shattered Maiden",    vfor:"Shattered Maiden" },
 
-  // ── SLOT 1 — POLAR JELLYFISH VARIATIONS ──────────────────────────────────
+  // -- SLOT 1 — POLAR JELLYFISH VARIATIONS ----------------------------------
   { s:1, n:"Radiant (Polar Jelly)", d:"Mood Recovery Speed +20%",                           cat:"Variation", type:"variation", src:"Polar Jelly",         vfor:"Polar Jelly" },
 
-  // ── SLOT 1 — FLAME ESSENCE VARIATIONS ────────────────────────────────────
+  // -- SLOT 1 — FLAME ESSENCE VARIATIONS ------------------------------------
   { s:1, n:"Golden Toad",         d:"Mood Recovery Speed +20%",                             cat:"Variation", type:"variation", src:"Flame Essence",       vfor:"Flame Essence" },
   { s:1, n:"Prince (Flame Essence)", d:"Max Mood +35",                                     cat:"Variation", type:"variation", src:"Flame Essence",       vfor:"Flame Essence" },
 
-  // ── SLOT 1 — SPACE TURNER VARIATIONS ─────────────────────────────────────
+  // -- SLOT 1 — SPACE TURNER VARIATIONS -------------------------------------
   { s:1, n:"White Cliff Remnants", d:"Max Mood +35",                                       cat:"Variation", type:"variation", src:"Space Turner",        vfor:"Space Turner" },
 
-  // ── SLOT 1 — VOODOO DOLL VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — VOODOO DOLL VARIATIONS --------------------------------------
   { s:1, n:"Fluffy Curse",        d:"Energy Recovery Speed +10%",                           cat:"Variation", type:"variation", src:"Voodoo Doll",         vfor:"Voodoo Doll" },
 
-  // ── SLOT 1 — DR. TEDDY VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — DR. TEDDY VARIATIONS ---------------------------------------
   { s:1, n:"Infrasonic Illusion (Dr. Teddy)", d:"Energy Recovery Speed +20%",               cat:"Variation", type:"variation", src:"Dr. Teddy",           vfor:"Dr. Teddy" },
   { s:1, n:"Christmas Spirit (Chefosaurus Rx)", d:"The appearance of the Deviation has changed. Max Deviant Power +10%, Deviant Power recovery speed +5%.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex" },
   { s:2, n:"Christmas Spirit (Chefosaurus Rx)", d:"The appearance of the Deviation has changed. Max Deviant Power +10%, Deviant Power recovery speed +5%.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex", typeReq:"Combat" },
@@ -244,54 +244,54 @@ var TRAITS = [
   { s:1, n:"Aberrant Progeny (Chefosaurus Rx)",  d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex" },
   { s:2, n:"Aberrant Progeny (Chefosaurus Rx)",  d:"When synced, Deviation Power is increased by an additional 8.", cat:"Variation", type:"variation", src:"Chefosaurus Rex", vfor:"Chefosaurus Rex", typeReq:"Combat" },
 
-  // ── SLOT 1 — MINI WONDER VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — MINI WONDER VARIATIONS --------------------------------------
   { s:1, n:"Bursting Magma (Mini Wonder)", d:"Max Mood +35",                                cat:"Variation", type:"variation", src:"Mini Wonder",         vfor:"Mini Wonder" },
 
-  // ── SLOT 1 — SNOWSPRITE VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — SNOWSPRITE VARIATIONS ---------------------------------------
   { s:1, n:"Spring's Return",     d:"Max Mood +35",                                        cat:"Variation", type:"variation", src:"Snowsprite",          vfor:"Snowsprite" },
 
-  // ── SLOT 1 — INVINCIBLE SUN VARIATIONS ───────────────────────────────────
+  // -- SLOT 1 — INVINCIBLE SUN VARIATIONS -----------------------------------
   { s:1, n:"Malevolent Sun",      d:"Mood Recovery Speed +20%",                             cat:"Variation", type:"variation", src:"Invincible Sun",      vfor:"Invincible Sun" },
 
-  // ── SLOT 1 — PARTY MONKEY VARIATIONS ─────────────────────────────────────
+  // -- SLOT 1 — PARTY MONKEY VARIATIONS -------------------------------------
   { s:1, n:"Infrasonic Illusion (Party Monkey)", d:"Energy Recovery Speed +10%",            cat:"Variation", type:"variation", src:"Party Monkey",        vfor:"Party Monkey" },
 
-  // ── SLOT 1 — DISCO BALL VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — DISCO BALL VARIATIONS ---------------------------------------
   { s:1, n:"Infrasonic Illusion (Disco Ball)", d:"Energy Recovery Speed +10%",              cat:"Variation", type:"variation", src:"Disco Ball",          vfor:"Disco Ball" },
 
-  // ── SLOT 1 — ZAPCAM VARIATIONS ───────────────────────────────────────────
+  // -- SLOT 1 — ZAPCAM VARIATIONS -------------------------------------------
   { s:1, n:"Fool's Memory",       d:"Energy Recovery Speed +10%",                           cat:"Variation", type:"variation", src:"Zapcam",              vfor:"Zapcam" },
 
-  // ── SLOT 1 — RAIN MAN VARIATIONS ────────────────────────────────────────
+  // -- SLOT 1 — RAIN MAN VARIATIONS ----------------------------------------
   { s:1, n:"Light Rain",          d:"Energy Recovery Speed +15%",                           cat:"Variation", type:"variation", src:"Rain Man",            vfor:"Rain Man" },
   { s:1, n:"Childlike Whimsy",    d:"Energy Recovery Speed +30%",                           cat:"Variation", type:"variation", src:"Rain Man",            vfor:"Rain Man" },
   { s:1, n:"Youthful Heart",      d:"Mood Recovery Speed +30%",                             cat:"Variation", type:"variation", src:"Rain Man",            vfor:"Rain Man" },
 
-  // ── SLOT 1 — TAR PUDDING VARIATIONS ──────────────────────────────────────
+  // -- SLOT 1 — TAR PUDDING VARIATIONS --------------------------------------
   { s:1, n:"Radiance (Tar Pudding)", d:"Max Energy +40%",                                  cat:"Variation", type:"variation", src:"Tar Pudding",         vfor:"Tar Pudding" },
   { s:1, n:"Fine Brew",           d:"Energy Recovery Speed +10%",                           cat:"Variation", type:"variation", src:"Tar Pudding",         vfor:"Tar Pudding" },
 
-  // ── SLOT 1 — ELECTRIC EEL VARIATIONS ─────────────────────────────────────
+  // -- SLOT 1 — ELECTRIC EEL VARIATIONS -------------------------------------
   { s:1, n:"Gold Lightning (Eel)", d:"Energy Recovery Speed +15%",                          cat:"Variation", type:"variation", src:"Electric Eel",        vfor:"Electric Eel" },
   { s:1, n:"Infrasonic Illusion (Eel)", d:"Max Mood +35",                                  cat:"Variation", type:"variation", src:"Electric Eel",        vfor:"Electric Eel" },
 
-  // ── SLOT 1 — H37 VARIATIONS ──────────────────────────────────────────────
+  // -- SLOT 1 — H37 VARIATIONS ----------------------------------------------
   { s:1, n:"Infrasonic Illusion (H37)", d:"Mood Recovery Speed +20%",                      cat:"Variation", type:"variation", src:"H37",                 vfor:"H37" },
   { s:1, n:"Prototype",           d:"Energy Recovery Speed +10%",                           cat:"Variation", type:"variation", src:"H37",                 vfor:"H37" },
 
-  // ── SLOT 1 — PAPER DOLL VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — PAPER DOLL VARIATIONS ---------------------------------------
   { s:1, n:"Witch's Beloved",     d:"Mood Recovery Speed +20%",                             cat:"Variation", type:"variation", src:"Paper Doll",          vfor:"Paper Doll" },
 
-  // ── SLOT 1 — PUP BUDDY VARIATIONS ───────────────────────────────────────
+  // -- SLOT 1 — PUP BUDDY VARIATIONS ---------------------------------------
   { s:1, n:"Golden Lightning (Pup)", d:"Mood Recovery Speed +30%",                          cat:"Variation", type:"variation", src:"Pup Buddy",           vfor:"Pup Buddy" },
 
-  // ── SLOT 1 — ATOMIC SNAIL VARIATIONS ─────────────────────────────────────
+  // -- SLOT 1 — ATOMIC SNAIL VARIATIONS -------------------------------------
   { s:1, n:"Gold Lightning (Snail)", d:"Energy Recovery Speed +15%",                        cat:"Variation", type:"variation", src:"Atomic Snail",        vfor:"Atomic Snail" },
 
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 2 — COMBAT TRAITS ────────────────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 2 — COMBAT TRAITS ------------------------------------------------
+  // ===========================================================================
   { s:2, n:"Psychic Kid",          d:"Having it fight alongside grants Status DMG +5%",                              cat:"Combat", type:"positive", src:"Combat Deviations", typeReq:"Combat" },
   { s:2, n:"Crack Shot",           d:"Having it fight alongside grants Weapon DMG +5%",                              cat:"Combat", type:"positive", src:"Combat Deviations", typeReq:"Combat" },
   { s:2, n:"Heavy and Solid",      d:"Higher Load grants higher DMG Reduction for torso, up to +15%",                cat:"Combat", type:"positive", src:"Combat Deviations", typeReq:"Combat" },
@@ -312,7 +312,7 @@ var TRAITS = [
   { s:2, n:"Stay Indoors",         d:"Syncing with it grants +8% Stamina Consumption in Settlements",                cat:"Combat", type:"negative", src:"Combat Deviations", typeReq:"Combat" },
   { s:2, n:"Sedentary",            d:"Syncing with it grants Max Load -8 when exploring Settlements",                cat:"Combat", type:"negative", src:"Combat Deviations", typeReq:"Combat" },
 
-  // ── SLOT 2 — COMBAT VARIATIONS ────────────────────────────────────────────
+  // -- SLOT 2 — COMBAT VARIATIONS --------------------------------------------
   // Butterfly's Emissary
   { s:2, n:"Praise the Moon - Starry Night", d:"When synced, deal 6% more DMG (Weapon & Status) at night. Halved during the day.", cat:"Variation", type:"variation", src:"Butterfly's Emissary", vfor:"Butterfly's Emissary", typeReq:"Combat" },
   { s:2, n:"Weakspot Master - Glistening Blue", d:"When synced, hitting a Weakspot increases Deviation Power by 1. Cooldown: 3s.", cat:"Variation", type:"variation", src:"Butterfly's Emissary", vfor:"Butterfly's Emissary", typeReq:"Combat" },
@@ -322,7 +322,7 @@ var TRAITS = [
   // By-The-Wind
   { s:2, n:"Marine Star (By-The-Wind)",    d:"When synced, each reload gives either 5% Weapon DMG or 5% Status DMG at random.", cat:"Variation", type:"variation", src:"By the Wind", vfor:"By the Wind", typeReq:"Combat" },
 
-  // ── SLOT 2 — LUNAR ORACLE VARIATIONS (Combat) ────────────────────────────
+  // -- SLOT 2 — LUNAR ORACLE VARIATIONS (Combat) ----------------------------
   { s:2, n:"Lunar Oracle (Zapcam)",              d:"Weapon DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Zapcam",              vfor:"Zapcam",              typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Lonewolf)",            d:"Weapon DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Lonewolf's Whisper",  vfor:"Lonewolf's Whisper",  typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Festering Gel)",       d:"Restores 1 Deviant Power every 8s, 1.5 if sanity below 30%",                       cat:"Variation", type:"variation", src:"Festering Gel",       vfor:"Festering Gel",       typeReq:"Combat" },
@@ -331,7 +331,7 @@ var TRAITS = [
   { s:2, n:"Lunar Oracle (Zeno Purifier)",       d:"Melee DMG +10% to you and Zeno, +15% when sanity below 30%",                       cat:"Variation", type:"variation", src:"Zeno-Purifier",       vfor:"Zeno-Purifier",       typeReq:"Combat" },
   { s:2, n:"Lunar Oracle (Pyro Dino)",           d:"Status DMG +5%, 7.5% when sanity below 30%",                                       cat:"Variation", type:"variation", src:"Pyro Dino",           vfor:"Pyro Dino",           typeReq:"Combat" },
 
-  // ── SLOT 2 — GRAVITY / STARFALL INVERSION VARIATIONS (Combat) ─────────────
+  // -- SLOT 2 — GRAVITY / STARFALL INVERSION VARIATIONS (Combat) -------------
   { s:2, n:"Starfall Inversion (Mini Wonder)",   d:"+5% head and torso DMG reduction. +7.5% when airborne.",                            cat:"Variation", type:"variation", src:"Mini Wonder",         vfor:"Mini Wonder",         typeReq:"Combat" },
   { s:2, n:"Starfall Inversion (Invincible Sun)",d:"+5% Blaze Elemental DMG. +7.5% when airborne.",                                    cat:"Variation", type:"variation", src:"Invincible Sun",      vfor:"Invincible Sun",      typeReq:"Combat" },
   { s:2, n:"Starfall Inversion (Polar Jelly)",   d:"+5% Frost Elemental DMG. +7.5% when airborne.",                                    cat:"Variation", type:"variation", src:"Polar Jelly",         vfor:"Polar Jelly",         typeReq:"Combat" },
@@ -340,9 +340,9 @@ var TRAITS = [
   { s:2, n:"Starfall Inversion (Mini Feaster)",  d:"+5% Status DMG. +7.5% when airborne.",                                             cat:"Variation", type:"variation", src:"Mini Feaster",        vfor:"Mini Feaster",        typeReq:"Combat" },
 
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 2 — TERRITORY TRAITS ─────────────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 2 — TERRITORY TRAITS ---------------------------------------------
+  // ===========================================================================
   { s:2, n:"Anti-Burnout",            d:"When dormant regaining Deviant Power, 20% chance other Territorial Deviations receive Deviant Power +5 (all)", cat:"Territory", type:"positive", src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"Dream Wild",             d:"When dormant regaining Deviant Power, 10% chance other Territorial Deviations receive Deviant Power +10 (all)", cat:"Territory", type:"positive", src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"A World of Charm",       d:"When dormant regaining Mood, 10% chance other Territorial Deviations receive Mood +20 (all)",                  cat:"Territory", type:"positive", src:"Territory Deviations", typeReq:"Territory" },
@@ -357,7 +357,7 @@ var TRAITS = [
   { s:2, n:"OnePlus",                d:"When returning with resources, 5% chance to bring back rare crystals. Return time increased (single)",          cat:"Territory", type:"mixed",    src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"Imperfect Endless Motion", d:"10% chance that working does not consume Deviant Power (single)",                                            cat:"Territory", type:"positive", src:"Territory Deviations", typeReq:"Territory" },
 
-  // ── SLOT 2 — TERRITORY NEGATIVE TRAITS ────────────────────────────────────
+  // -- SLOT 2 — TERRITORY NEGATIVE TRAITS ------------------------------------
   { s:2, n:"Heartthrob",             d:"10% others lose Power when its Power decreases. Dormant Mood: 10% others +Mood 5 (all)",                       cat:"Territory", type:"mixed",    src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"Snooze Aficionado",      d:"10% others lose Mood when its Mood decreases. Dormant Power: 10% others +Power 5 (all)",                       cat:"Territory", type:"mixed",    src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"Baffling Behavior",      d:"When its Deviant Power decreases, 10% chance other Territorial Deviations lose Power (all)",                    cat:"Territory", type:"negative", src:"Territory Deviations", typeReq:"Territory" },
@@ -370,7 +370,7 @@ var TRAITS = [
   { s:2, n:"Slacking Off",           d:"Mood and Deviant Power consumption speed +5% for working Territorial Deviation (single)",                       cat:"Territory", type:"negative", src:"Territory Deviations", typeReq:"Territory" },
   { s:2, n:"An Old Hand Knows the Ropes", d:"Faster Mood and Deviant Power consumption, and Working Speed +10% for Territorial Deviation (single)",     cat:"Territory", type:"mixed",    src:"Territory Deviations", typeReq:"Territory" },
 
-  // ── SLOT 2 — TERRITORY VARIATIONS ─────────────────────────────────────────
+  // -- SLOT 2 — TERRITORY VARIATIONS -----------------------------------------
   { s:2, n:"Daydreaming - Moonlit Jewels",  d:"When recovering Energy while dormant, 20% chance to restore 15 Deviant Power to other Territory Deviations", cat:"Variation", type:"variation", src:"Extradimensional Cat", vfor:"Extradimensional Cat", typeReq:"Territory" },
   { s:2, n:"Water Dormancy - Heavy Ginger", d:"When resting by water, Mood Recovery Speed +35%",                                                           cat:"Variation", type:"variation", src:"Extradimensional Cat", vfor:"Extradimensional Cat", typeReq:"Territory" },
   // Nutcracker territory variations
@@ -393,9 +393,9 @@ var TRAITS = [
   { s:2, n:"Lunar Oracle (Atomic Snail)",    d:"Resource production interval reduced by 15%",                                                              cat:"Variation", type:"variation", src:"Atomic Snail", vfor:"Atomic Snail", typeReq:"Crafting" },
 
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 2 — CRAFTING TRAITS ──────────────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 2 — CRAFTING TRAITS ----------------------------------------------
+  // ===========================================================================
   { s:2, n:"Waste Not",            d:"When Activity Score >90%, 5% chance to increase other Deviations' Deviant Power by 10 when generating resources (all)",  cat:"Crafting", type:"positive", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"Leftover",             d:"When Activity Score >20%, 10% chance to increase other Deviations' Power by 1 when generating resources. Max Storage -20% (all)", cat:"Crafting", type:"mixed", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"Byproduct",            d:"When Activity Score >90%, 10% chance to increase other Deviations' Power by 2 when generating resources (all)",          cat:"Crafting", type:"positive", src:"Crafting Deviations", typeReq:"Crafting" },
@@ -421,23 +421,23 @@ var TRAITS = [
   { s:2, n:"The Last Night",       d:"Resource production interval for Crafting reduced by 15% (single)",                                                     cat:"Crafting", type:"positive", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"Work of Proficiency",  d:"When producing resources, 5% chance to not use up Deviant Power (single)",                                              cat:"Crafting", type:"positive", src:"Crafting Deviations", typeReq:"Crafting" },
 
-  // ── SLOT 2 — CRAFTING NEGATIVE TRAITS ─────────────────────────────────────
+  // -- SLOT 2 — CRAFTING NEGATIVE TRAITS -------------------------------------
   { s:2, n:"Smooth Sheep Rustler",  d:"When Activity Score <20%, consume all other Deviations' Power by 5 when generating resources (all)",                    cat:"Crafting", type:"negative", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"Clumsy",                d:"5% chance that Crafting Output -1 (single)",                                                                            cat:"Crafting", type:"negative", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"No Such Thing As a Small Cup", d:"Max Storage Capacity -10% (single)",                                                                            cat:"Crafting", type:"negative", src:"Crafting Deviations", typeReq:"Crafting" },
   { s:2, n:"Lazy",                   d:"Crafting speed -10% (single)",                                                                                         cat:"Crafting", type:"negative", src:"Crafting Deviations", typeReq:"Crafting" },
 
-  // ── SLOT 2 — GROWSHROOM CRAFTING VARIATION ────────────────────────────────
+  // -- SLOT 2 — GROWSHROOM CRAFTING VARIATION --------------------------------
   { s:2, n:"Toxicologist - Green Touch", d:"When working in Pollution Zone, 25% chance to not consume Energy",                                                cat:"Variation", type:"variation", src:"Growshroom", vfor:"Growshroom", typeReq:"Crafting" },
 
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 3 — DEVIATED (Animal / Furniture) ────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 3 — DEVIATED (Animal / Furniture) --------------------------------
+  // ===========================================================================
   // These traits have DIFFERENT effects depending on whether the deviation
   // is Combat vs. Territory/Crafting. Descriptions below cover both.
 
-  // ── Animals — Combat Effects ──────────────────────────────────────────────
+  // -- Animals — Combat Effects ----------------------------------------------
   { s:3, n:"Moonlight Assault [Wolf]",            d:"At night, Deviant Energy and Mood Recovery rates are increased.",                                          cat:"Animal", type:"positive", src:"Wolf" },
   { s:3, n:"Feline Creatures [Leopard]",          d:"After syncing, fall damage reduced by 50%, fractures prevented.",                                         cat:"Animal", type:"positive", src:"Leopard" },
   { s:3, n:"Brute Force Rules [Bear]",            d:"Combat: Dodge shatters ores/trees (no resources). Crafting: 10% double resource output.",                 cat:"Animal", type:"positive", src:"Bear" },
@@ -448,7 +448,7 @@ var TRAITS = [
   { s:3, n:"Mind Massage [Capybara]",             d:"Combat: Sanity gradually recovers. Territory: 10% Sanity on return (10m CD).",                            cat:"Animal", type:"positive", src:"Capybara" },
   { s:3, n:"Herbivore [Deer/Goat]",               d:"Combat: Nearby herbivores won't flee. Crafting: Chance to yield extra deviated plant.",                   cat:"Animal", type:"positive", src:"Deer or Goat" },
 
-  // ── Furniture — Effects ───────────────────────────────────────────────────
+  // -- Furniture — Effects ---------------------------------------------------
   { s:3, n:"Pollution Adaptation [Toilet]",       d:"Combat: Sanity drops 90% slower in Pollution Zone. Territory: Max Deviant Energy +15 in Pollution.",      cat:"Furniture", type:"positive", src:"Modern Toilet" },
   { s:3, n:"Precision Moment [Clock]",            d:"Increases Mood by 10 and Deviant Energy by 10 for all Deviations in territory every hour (no stack).",    cat:"Furniture", type:"positive", src:"Desktop Electronic Clock" },
   { s:3, n:"Master of Temperatures [Fan]",        d:"Combat: +10 Heat Resist in territory. Territory: +10 Heat Resist.",                                      cat:"Furniture", type:"positive", src:"Any Fan" },
@@ -461,9 +461,9 @@ var TRAITS = [
   { s:3, n:"Neon Flicker [Like]",                 d:"For every Deviation with Neon Flicker in territory, max Mood of all Deviations increases by 1.",          cat:"Furniture", type:"positive", src:"Like" },
 
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // ── SLOT 4 — CHAOS / SPECIAL ──────────────────────────────────────────────
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ===========================================================================
+  // -- SLOT 4 — CHAOS / SPECIAL ----------------------------------------------
+  // ===========================================================================
   { s:4, n:"Chaosaurus",         d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Pyro Dino" },
   { s:4, n:"Chaos Mr. Wish",    d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Mr. Wish" },
   { s:4, n:"Chaos Snowsprite",  d:"Chaos trait with extremely high Dex Value (Deviation Secure Scenario)",  cat:"Chaos", type:"variation", src:"Deviation Secure Arena NPC Shop", vfor:"Snowsprite" },
