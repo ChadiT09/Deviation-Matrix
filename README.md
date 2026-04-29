@@ -2,16 +2,14 @@
 
 A browser-based + mobile app tool for the survival game **Once Human** that helps players plan and track Deviation fusions with precision.
 
-> Inspired by [DevAbhi-Chauhan/Once_human_fusion](https://github.com/DevAbhi-Chauhan/Once_human_fusion)
-
 ---
 
 ## Download
 
-**Android APK** — install directly on your phone:
+**Android APK** — install directly on your phone:  
 👉 [DeviationMatrix-android.apk](https://zo.pub/tester009/dm-apk/DeviationMatrix-android.apk) (4.0 MB)
 
-**Web app** — works in any browser, no install needed:
+**Web app** — works in any browser, no install needed:  
 👉 [deviation-matrix.vercel.app](https://deviation-matrix.vercel.app)
 
 ---
@@ -20,7 +18,7 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 
 | Tab | What it does |
 |-----|-------------|
-| **Inventory** | Log your Deviations with species, nickname, skill/activity stars, traits, fuses, and notes. Track Animals & Furniture counts for Slot 3 materials. |
+| **Inventory** | Log your Deviations with species, nickname, skill/activity stars, traits, fuses, and notes. Track Animals & Furniture counts for Slot 3 materials. Export/import via XLSX, JSON, or shareable code. |
 | **Fusion Sim** | Select two parents + up to 3 middle-tube materials. Live calculation of species odds, stat ranges, and per-slot trait odds (Scenario A/B/C + Clean buff). Includes a 5-minute countdown timer with browser/haptic notifications that auto-consumes parents and materials on completion. |
 | **Blueprint** | Pick a target species + desired traits. Generates a fusion path diagram with a shopping list showing which inventory deviations or materials can supply each trait — with ready/missing/progress indicators. |
 | **Trait Enc.** | Full searchable encyclopedia of all traits — filterable by category and deviation, with slot, source, and description. |
@@ -29,6 +27,26 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 - **Push notifications** when the 5-minute fusion timer completes (even if the app is in the background)
 - **Haptic feedback** on button presses
 - **Installable** — add to home screen for a native app feel
+
+---
+
+## What's New (v4.5 — April 2026)
+
+### New Deviations
+- **Zapamander** — Combat type added
+- **Doctor Raven** — Territory type added
+
+### New Variant Traits
+- **Dr. Teddy** — Christmas Spirit (S1 + S2) and Aberrant Progeny (S1 + S2)
+- **Chefosaurus Rex** — Christmas Spirit (S1 + S2) and Aberrant Progeny (S1 + S2)
+
+### JSON & Code Sharing
+- **JSON export/import** — full structured backup as a `.json` file
+- **Copy Build Code** — compact Base64 string you can paste anywhere
+- **Load Build Code** — paste a code to restore inventory instantly
+
+### New Deviation Species
+- **Zapcam** added to the Combat deviations list (was missing from previous version).
 
 ---
 
@@ -83,9 +101,6 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 ### New Furniture Material
 - **Neon Flicker [Like]** added to both `MAT_DEFS` and `TRAITS`. Each deviation with this trait in your territory increases max Mood for all deviations by 1.
 
-### New Deviation Species
-- **Zapcam** added to the Combat deviations list (was missing from previous version).
-
 ### Slot 3 Trait Descriptions Enhanced
 - All Animal and Furniture (Slot 3) trait descriptions now show **both Combat and Territory/Crafting effects** side by side, since these traits behave differently depending on deviation type.
 
@@ -130,7 +145,7 @@ deviation-matrix/
 │   ├── fusion.js       ← Timer, parent selects, material slots, calcFusion, modal, notifications
 │   ├── blueprint.js    ← Blueprint path generator + shopping list
 │   ├── encyclopedia.js ← Trait encyclopedia render + deviation filter
-│   ├── exportimport.js ← XLSX export/import + share build URL encode/decode
+│   ├── exportimport.js ← XLSX export/import + JSON/code sharing + share build URL encode/decode
 │   └── onboarding.js   ← Interactive walkthrough tour
 ├── manifest.json       ← PWA manifest
 └── mobile/             ← Capacitor Android project
@@ -288,9 +303,10 @@ Pull requests welcome! Please keep game data changes in `data/database.js` only.
 - Use the correct `cat` and `typeReq` values — traits that only apply to specific deviation types must have `typeReq` set.
 - Variation traits must include both `vfor` (target deviation species) and `src` (source deviation).
 
-*Disclaimer: I used AI to assist in building this, as it started as a small project and grew beyond its original scope.*
-
 ---
+
+*Inspired by [DevAbhi-Chauhan/Once_human_fusion](https://github.com/DevAbhi-Chauhan/Once_human_fusion)*  
+*Built with AI assistance.*
 
 ## License
 
