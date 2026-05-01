@@ -178,7 +178,8 @@
     <button class="btn btn-sm" onclick="triggerImport()">&#8593; XLSX</button>
     <button class="btn btn-sm" onclick="exportToJSON()">&#8595; JSON</button>
     <button class="btn btn-sm" onclick="triggerJSONImport()">&#8593; JSON</button>
-    <button class="btn btn-sm btn-sh" onclick="showBuildCode()">&#10047; CODE</button>
+    <button class="btn btn-sm" onclick="triggerScreenshotImport()">📸 SCREENSHOT</button>
+    <button class="btn btn-sm btn-sh" onclick="showBuildCode()"><button class="btn btn-sm btn-sh" onclick="showBuildCode()">&#10047; CODE</button>#10047; CODE</button>
     <input type="file" id="xlsx-import-input" accept=".xlsx" style="display:none" onchange="handleImportFile(event)">
     <input type="file" id="json-import-input" accept=".json" style="display:none" onchange="handleImportJSON(event)">
   </div>
@@ -407,6 +408,7 @@
 
 <!-- ════════ SCRIPTS (order matters) ════════ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="data/database.js"></script>
 <script src="js/state.js"></script>
 <script src="js/ui.js"></script>

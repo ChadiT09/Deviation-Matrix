@@ -231,3 +231,270 @@ function loadBuildCode() {
     alert('Invalid build code: ' + err.message);
   }
 }
+
+// ════════ SCREENSHOT OCR IMPORT ════════
+function triggerScreenshotImport() {
+  var input = document.getElementById('screenshot-import-input');
+  if (!input) {
+    input = document.createElement('input');
+    input.type = 'file';
+    input.id = 'screenshot-import-input';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.style.display = 'none';
+    input.onchange = handleScreenshotImport;
+    document.body.appendChild(input);
+  }
+  input.click();
+}
+
+var _ocrWorker = null;
+async function getOcrWorker() {
+  if (!_ocrWorker) {
+    _ocrWorker = await Tesseract.createWorker('eng');
+  }
+  return _ocrWorker;
+}
+
+async function handleScreenshotImport(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  event.target.value = '';
+
+  var modalBody = document.getElementById('modal-body');
+  document.getElementById('modal-overlay').style.display = 'flex';
+  modalBody.innerHTML =
+    '<h3>📸 Scanning Screenshot...</h3>' +
+    '<img src="" id="ocr-preview" style="display:none;max-width:100%;border:1px solid var(--bd);margin:10px 0;border-radius:4px">' +
+    '<div id="ocr-status" style="font-size:12px;color:var(--td);margin:10px 0">Initializing OCR engine...</div>' +
+    '<div id="ocr-progress" style="height:4px;background:var(--bd);border-radius:2px;margin:10px 0"><div id="ocr-bar" style="height:100%;background:var(--c);width:0%;transition:width .3s;border-radius:2px"></div></div>' +
+    '<div id="ocr-results" style="display:none;max-height:300px;overflow-y:auto;font-size:11px;font-family:var(--mono);background:rgba(0,18,32,.7);padding:10px;border:1px solid var(--bd)"></div>' +
+    '<div id="ocr-actions" style="display:none;margin-top:10px"><button class="btn btn-p" onclick="confirmOcrImport()">+ ADD TO INVENTORY</button></div>' +
+    '<button class="btn btn-sm" onclick="closeModalDirect()" style="margin-top:8px">CANCEL</button>';
+
+  try {
+    var preview = document.getElementById('ocr-preview');
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+
+    document.getElementById('ocr-status').textContent = 'Loading OCR engine (first time may take a moment)...';
+    document.getElementById('ocr-bar').style.width = '20%';
+
+    var worker = await getOcrWorker();
+    document.getElementById('ocr-status').textContent = 'Recognizing text...';
+    document.getElementById('ocr-bar').style.width = '40%';
+
+    var result = await worker.recognize(file);
+    document.getElementById('ocr-bar').style.width = '70%';
+    document.getElementById('ocr-status').textContent = 'Parsing deviations...';
+
+    var text = result.data.text;
+    var parsed = parseDeviationsFromText(text);
+
+    document.getElementById('ocr-bar').style.width = '100%';
+    document.getElementById('ocr-status').textContent = parsed.length + ' potential deviation(s) found';
+
+    var resultsEl = document.getElementById('ocr-results');
+    resultsEl.style.display = 'block';
+
+    if (parsed.length === 0) {
+      resultsEl.innerHTML = '<div style="color:var(--cd)">No deviations detected. Try a clearer screenshot of your inventory grid.</div><div style="margin-top:8px;font-size:10px;color:var(--tm)">Raw text:<br><pre style="white-space:pre-wrap;margin-top:4px">' + text.slice(0,500) + '</pre></div>';
+    } else {
+      resultsEl.innerHTML = parsed.map(function(d, i) {
+        return '<div style="margin-bottom:8px;padding:6px;border:1px solid var(--bd)">' +
+          '<div style="color:var(--c);font-weight:600">' + (i+1) + '. ' + d.name + '</div>' +
+          '<div style="color:var(--td);font-size:10px">' + d.species + ' | Skill:' + d.skill + ' Act:' + d.activity + ' | Fuses:' + d.fuses + '</div>' +
+          '<div style="color:var(--cg);font-size:10px">' + (d.traits.length ? d.traits.join(', ') : 'no traits') + '</div>' +
+          '<div style="font-size:9px;color:' + (d.matchQuality === 'high' ? 'var(--cg)' : 'var(--ca)') + ';margin-top:2px">Confidence: ' + d.matchQuality + '</div>' +
+          '</div>';
+      }).join('');
+      document.getElementById('ocr-actions').style.display = 'block';
+      window._pendingOcrDeviations = parsed;
+    }
+  } catch(err) {
+    document.getElementById('ocr-status').innerHTML = '<span style="color:var(--cd)">OCR failed: ' + err.message + '</span>';
+    console.error('OCR error:', err);
+  }
+}
+
+function parseDeviationsFromText(text) {
+  var deviations = [];
+  var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
+
+  // ── Trait name patterns to look for ──
+  var TRAIT_KEYWORDS = [
+    'Moonlight Assault','Crack Shot','Power Rewind','Lunar Oracle','Starfall Inversion',
+    'Psychic Kid','Weakspot Master','Marine Star','Aberrant Progeny','Chaos',
+    'Fluffy Curse','Frigid Touch','Infrasonic Illusion','Dazing Aura','Iron意志',
+    'Upper Hand','Optimist','Covert Energy','Stable Energy','Stable Vitality',
+    'Move More','Living Map','Stardust Affinity','Productivity First',
+    'Dream Wild','Sweet Talk','Hydrophilic','Water Dormancy','Buy 1 Get 2',
+    'Come As One','Mineral Talent','Work of Proficiency'
+  ];
+
+  // ── Known deviation names to look for ──
+  var KNOWN_DEVS = DEVS.map(function(d){ return d.n; });
+
+  // ── Skill/Activity star patterns ──
+  var starPattern = /[\*★☆•·]+|(\d+)\/5|S(\d)|A(\d)/gi;
+  // Fuse pattern
+  var fusePattern = /fuse[s]?[:\s]*(\d+)|(\d+)\s*fuse/i;
+
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i];
+    var lower = line.toLowerCase();
+
+    // Check if this line contains a known deviation name
+    var matchedDev = null;
+    for (var j = 0; j < KNOWN_DEVS.length; j++) {
+      if (lower.indexOf(KNOWN_DEVS[j].toLowerCase()) >= 0 ||
+          fuzzyMatch(line, KNOWN_DEVS[j])) {
+        matchedDev = KNOWN_DEVS[j];
+        break;
+      }
+    }
+
+    if (matchedDev) {
+      var dev = {
+        name: matchedDev,
+        species: matchedDev,
+        type: getDevType(matchedDev),
+        skill: 3,
+        activity: 3,
+        fuses: 1,
+        traits: [],
+        notes: 'ocr import',
+        matchQuality: 'medium'
+      };
+
+      // Look for stars in nearby lines
+      for (var k = Math.max(0, i-2); k <= Math.min(lines.length-1, i+3); k++) {
+        if (k === i) continue;
+        var check = lines[k];
+        var stars = check.match(/★+/g) || check.match(/\*/g) || [];
+        if (stars.length > 0) {
+          if (check.toLowerCase().indexOf('skill') >= 0 || check.toLowerCase().indexOf('⭐') >= 0) {
+            dev.skill = Math.min(5, Math.max(1, stars.length));
+          } else if (check.toLowerCase().indexOf('activ') >= 0 || check.toLowerCase().indexOf('act') >= 0) {
+            dev.activity = Math.min(5, Math.max(1, stars.length));
+          }
+        }
+        // Try numeric skill/activity
+        var numMatch = check.match(/S[:\s]*(\d)/i) || check.match(/Skill[:\s]*(\d)/i);
+        if (numMatch) dev.skill = Math.min(5, Math.max(1, parseInt(numMatch[1])));
+        var actMatch = check.match(/A[:\s]*(\d)/i) || check.match(/Act[:\s]*(\d)/i);
+        if (actMatch) dev.activity = Math.min(5, Math.max(1, parseInt(actMatch[1])));
+        // Try star count (★ counts)
+        var starCount = (check.match(/★/g) || []).length;
+        if (starCount > 0 && starCount <= 5) {
+          if (check.toLowerCase().indexOf('skill') >= 0) dev.skill = starCount;
+          else if (check.toLowerCase().indexOf('activ') >= 0) dev.activity = starCount;
+        }
+        // Fuse count
+        var fuseM = lines[k].match(/(\d+)\s*fuse/i);
+        if (fuseM) dev.fuses = parseInt(fuseM[1]);
+        // Trait keywords
+        for (var t = 0; t < TRAIT_KEYWORDS.length; t++) {
+          if (check.toLowerCase().indexOf(TRAIT_KEYWORDS[t].toLowerCase()) >= 0) {
+            var info = getTraitInfo(TRAIT_KEYWORDS[t]);
+            if (info && dev.traits.indexOf(info.n) < 0 && dev.traits.length < 3) {
+              dev.traits.push(info.n);
+            }
+          }
+        }
+      }
+
+      // If we found traits, mark as high quality
+      if (dev.traits.length > 0) dev.matchQuality = 'high';
+
+      deviations.push(dev);
+      i++;
+      continue;
+    }
+
+    // Try to detect by trait keywords alone
+    for (var t = 0; t < TRAIT_KEYWORDS.length; t++) {
+      if (lower.indexOf(TRAIT_KEYWORDS[t].toLowerCase()) >= 0) {
+        var info = getTraitInfo(TRAIT_KEYWORDS[t]);
+        if (info) {
+          // Check if this trait's vfor (variation for) gives us the deviation name
+          var devName = null;
+          if (info.vfor) {
+            devName = info.vfor;
+          } else {
+            // Check nearby lines for a deviation name
+            for (var n = Math.max(0, i-2); n <= Math.min(lines.length-1, i+2); n++) {
+              if (n === i) continue;
+              for (var d = 0; d < KNOWN_DEVS.length; d++) {
+                if (fuzzyMatch(lines[n], KNOWN_DEVS[d])) {
+                  devName = KNOWN_DEVS[d];
+                  break;
+                }
+              }
+              if (devName) break;
+            }
+          }
+
+          if (devName) {
+            // Check if we already added this deviation
+            var existing = deviations.filter(function(x){ return x.species === devName; })[0];
+            if (existing && existing.traits.indexOf(info.n) < 0 && existing.traits.length < 3) {
+              existing.traits.push(info.n);
+            } else if (!existing) {
+              deviations.push({
+                name: devName, species: devName, type: getDevType(devName),
+                skill: 3, activity: 3, fuses: 1,
+                traits: [info.n], notes: 'ocr import', matchQuality: 'medium'
+              });
+            }
+          }
+        }
+        break;
+      }
+    }
+    i++;
+  }
+
+  return deviations;
+}
+
+function fuzzyMatch(a, b) {
+  a = a.toLowerCase().replace(/[^a-z0-9]/g,'');
+  b = b.toLowerCase().replace(/[^a-z0-9]/g,'');
+  if (a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true;
+  // Levenshtein-like quick check
+  if (Math.abs(a.length - b.length) > 3) return false;
+  var matches = 0;
+  for (var j = 0; j < b.length; j++) {
+    if (a.indexOf(b[j]) >= 0) matches++;
+  }
+  return matches >= b.length * 0.75;
+}
+
+function confirmOcrImport() {
+  var devs = window._pendingOcrDeviations || [];
+  if (!devs.length) return;
+  var added = 0;
+  devs.forEach(function(d) {
+    // Skip if this deviation already exists in inventory
+    var exists = inv.filter(function(x){ return x.species === d.species; });
+    if (exists.length > 0) return;
+    inv.push({
+      id: Date.now() + added,
+      name: d.name,
+      species: d.species,
+      type: d.type,
+      fuses: d.fuses,
+      skill: d.skill,
+      activity: d.activity,
+      traits: d.traits,
+      notes: d.notes
+    });
+    added++;
+  });
+  save();
+  renderInv();
+  closeModalDirect();
+  alert('Added ' + added + ' deviation(s) from screenshot. ' + (devs.length - added) + ' skipped (already in inventory).');
+}
