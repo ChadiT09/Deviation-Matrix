@@ -233,6 +233,17 @@ function loadBuildCode() {
 }
 
 // ════════ SCREENSHOT OCR IMPORT ════════
+var _ocrApiKey = null;
+
+function getOcrApiKey() {
+  if (_ocrApiKey) return _ocrApiKey;
+  // Try Zo secret first, fall back to inline key for local dev
+  _ocrApiKey = (typeof window.ENV !== 'undefined' && window.ENV.VISION_API_KEY)
+    || (typeof process !== 'undefined' && process.env && process.env.VISION_API_KEY)
+    || 'AIzaSyBeZZWMpiJ9b8CFI7cIlEtDEoMKJoCl6Rk';
+  return _ocrApiKey;
+}
+
 function triggerScreenshotImport() {
   var input = document.getElementById('screenshot-import-input');
   if (!input) {
@@ -248,14 +259,6 @@ function triggerScreenshotImport() {
   input.click();
 }
 
-var _ocrWorker = null;
-async function getOcrWorker() {
-  if (!_ocrWorker) {
-    _ocrWorker = await Tesseract.createWorker('eng');
-  }
-  return _ocrWorker;
-}
-
 async function handleScreenshotImport(event) {
   var file = event.target.files[0];
   if (!file) return;
@@ -266,7 +269,7 @@ async function handleScreenshotImport(event) {
   modalBody.innerHTML =
     '<h3>📸 Scanning Screenshot...</h3>' +
     '<img src="" id="ocr-preview" style="display:none;max-width:100%;border:1px solid var(--bd);margin:10px 0;border-radius:4px">' +
-    '<div id="ocr-status" style="font-size:12px;color:var(--td);margin:10px 0">Initializing OCR engine...</div>' +
+    '<div id="ocr-status" style="font-size:12px;color:var(--td);margin:10px 0">Uploading to Vision API...</div>' +
     '<div id="ocr-progress" style="height:4px;background:var(--bd);border-radius:2px;margin:10px 0"><div id="ocr-bar" style="height:100%;background:var(--c);width:0%;transition:width .3s;border-radius:2px"></div></div>' +
     '<div id="ocr-results" style="display:none;max-height:300px;overflow-y:auto;font-size:11px;font-family:var(--mono);background:rgba(0,18,32,.7);padding:10px;border:1px solid var(--bd)"></div>' +
     '<div id="ocr-actions" style="display:none;margin-top:10px"><button class="btn btn-p" onclick="confirmOcrImport()">+ ADD TO INVENTORY</button></div>' +
@@ -277,28 +280,64 @@ async function handleScreenshotImport(event) {
     preview.src = URL.createObjectURL(file);
     preview.style.display = 'block';
 
-    document.getElementById('ocr-status').textContent = 'Loading OCR engine (first time may take a moment)...';
-    document.getElementById('ocr-bar').style.width = '20%';
+    document.getElementById('ocr-status').textContent = 'Uploading to Vision API...';
+    document.getElementById('ocr-bar').style.width = '25%';
 
-    var worker = await getOcrWorker();
-    document.getElementById('ocr-status').textContent = 'Recognizing text...';
-    document.getElementById('ocr-bar').style.width = '40%';
+    // Convert file to base64
+    var base64 = await fileToBase64(file);
+    var apiKey = getOcrApiKey();
+    document.getElementById('ocr-status').textContent = 'Sending to Google Cloud Vision...';
+    document.getElementById('ocr-bar').style.width = '50%';
 
-    var result = await worker.recognize(file);
-    document.getElementById('ocr-bar').style.width = '70%';
+    // Call Google Cloud Vision API - TEXT_DETECTION
+    var response = await fetch('https://vision.googleapis.com/v1/images:annotate?key=' + apiKey, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: [{
+          image: { content: base64 },
+          features: [
+            { type: 'TEXT_DETECTION', maxResults: 1 },
+            { type: 'OBJECT_LOCALIZATION', maxResults: 10 }
+          ]
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      var errBody = await response.text();
+      throw new Error('Vision API error ' + response.status + ': ' + errBody);
+    }
+
+    var data = await response.json();
+    document.getElementById('ocr-bar').style.width = '75%';
     document.getElementById('ocr-status').textContent = 'Parsing deviations...';
 
-    var text = result.data.text;
+    var descriptions = [];
+    if (data.responses && data.responses[0]) {
+      var resp = data.responses[0];
+      if (resp.textAnnotations && resp.textAnnotations.length) {
+        descriptions.push(resp.textAnnotations[0].description);
+      }
+      if (resp.localizedObjectAnnotations) {
+        resp.localizedObjectAnnotations.forEach(function(obj) {
+          if (obj.name && obj.name !== 'Text' && obj.score >= 0.6) {
+            descriptions.push(obj.name);
+          }
+        });
+      }
+    }
+
+    var text = descriptions.join('\n') || '';
     var parsed = parseDeviationsFromText(text);
 
     document.getElementById('ocr-bar').style.width = '100%';
     document.getElementById('ocr-status').textContent = parsed.length + ' potential deviation(s) found';
-
     var resultsEl = document.getElementById('ocr-results');
     resultsEl.style.display = 'block';
 
     if (parsed.length === 0) {
-      resultsEl.innerHTML = '<div style="color:var(--cd)">No deviations detected. Try a clearer screenshot of your inventory grid.</div><div style="margin-top:8px;font-size:10px;color:var(--tm)">Raw text:<br><pre style="white-space:pre-wrap;margin-top:4px">' + text.slice(0,500) + '</pre></div>';
+      resultsEl.innerHTML = '<div style="color:var(--cd)">No deviations detected. Try a clearer screenshot of your inventory grid.</div><div style="margin-top:8px;font-size:10px;color:var(--tm)">Raw text:<br><pre style="white-space:pre-wrap;margin-top:4px">' + (text.slice(0, 500) || '(empty)') + '</pre></div>';
     } else {
       resultsEl.innerHTML = parsed.map(function(d, i) {
         return '<div style="margin-bottom:8px;padding:6px;border:1px solid var(--bd)">' +
@@ -309,49 +348,94 @@ async function handleScreenshotImport(event) {
           '</div>';
       }).join('');
       document.getElementById('ocr-actions').style.display = 'block';
-      window._pendingOcrDeviations = parsed;
     }
   } catch(err) {
-    document.getElementById('ocr-status').innerHTML = '<span style="color:var(--cd)">OCR failed: ' + err.message + '</span>';
-    console.error('OCR error:', err);
+    document.getElementById('ocr-status').textContent = 'Error: ' + err.message;
+    document.getElementById('ocr-status').style.color = 'var(--cd)';
   }
+}
+
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function parseDeviationsFromText(text) {
   var deviations = [];
   var lines = text.split('\n').map(function(l) { return l.trim(); }).filter(Boolean);
 
-  // ── Trait name patterns to look for ──
+  // ── Trait name patterns to look for (strip parenthetical / bracketed suffix for matching) ──
   var TRAIT_KEYWORDS = [
     'Moonlight Assault','Crack Shot','Power Rewind','Lunar Oracle','Starfall Inversion',
     'Psychic Kid','Weakspot Master','Marine Star','Aberrant Progeny','Chaos',
-    'Fluffy Curse','Frigid Touch','Infrasonic Illusion','Dazing Aura','Iron意志',
+    'Fluffy Curse','Frigid Touch','Infrasonic Illusion','Dazing Aura',
     'Upper Hand','Optimist','Covert Energy','Stable Energy','Stable Vitality',
     'Move More','Living Map','Stardust Affinity','Productivity First',
     'Dream Wild','Sweet Talk','Hydrophilic','Water Dormancy','Buy 1 Get 2',
-    'Come As One','Mineral Talent','Work of Proficiency'
+    'Come As One','Mineral Talent','Work of Proficiency',
+    'A World of Charm','Forever Young','HP Boost'
   ];
 
-  // ── Known deviation names to look for ──
+  // ── Known deviation names ──
   var KNOWN_DEVS = DEVS.map(function(d){ return d.n; });
 
-  // ── Skill/Activity star patterns ──
-  var starPattern = /[\*★☆•·]+|(\d+)\/5|S(\d)|A(\d)/gi;
-  // Fuse pattern
-  var fusePattern = /fuse[s]?[:\s]*(\d+)|(\d+)\s*fuse/i;
+  // ── Truncation map: what OCR might produce → actual trait name ──
+  var TRUNC_MAP = {
+    'A World of Ch': 'A World of Charm',
+    'A World of C': 'A World of Charm',
+    'Forever Youn': 'Forever Young',
+    'Rebecca - Ab': 'Aberrant Progeny',
+    'HP -3': 'HP Boost',
+    'Enchanting Voi': 'Enchanting Void',
+    'Starfall Inver': 'Starfall Inversion',
+    'Moonlight Assa': 'Moonlight Assault',
+    'Aberrant Proge': 'Aberrant Progeny',
+  };
+
+  function resolveTruncation(raw) {
+    if (TRUNC_MAP[raw]) return TRUNC_MAP[raw];
+    // Partial: check if any known trait starts with raw
+    for (var t of TRAITS) {
+      if (t.n.startsWith(raw)) return t.n;
+    }
+    return raw;
+  }
+
+  // ── Star & stat patterns ──
+  var fusePattern = /(\d+)\s*fuse/i;
 
   var i = 0;
   while (i < lines.length) {
     var line = lines[i];
     var lower = line.toLowerCase();
 
-    // Check if this line contains a known deviation name
+    // ── 1. Try to match a known deviation name ──
     var matchedDev = null;
     for (var j = 0; j < KNOWN_DEVS.length; j++) {
       if (lower.indexOf(KNOWN_DEVS[j].toLowerCase()) >= 0 ||
           fuzzyMatch(line, KNOWN_DEVS[j])) {
         matchedDev = KNOWN_DEVS[j];
         break;
+      }
+    }
+
+    // ── Also check for "Name - Species" patterns (common in game UI) ──
+    // e.g. "Rebecca - Aberrant Progeny" → species is Aberrant Progeny but Name is Rebecca
+    // Aberrant Progeny is NOT a deviation species, Rebecca IS
+    var dashMatch = line.match(/^([A-Za-z0-9\s]+?)\s*-\s*(.+)$/);
+    if (dashMatch && !matchedDev) {
+      var leftPart = dashMatch[1].trim();
+      var rightPart = dashMatch[2].trim();
+      // Check if left part is a known deviation
+      for (var j = 0; j < KNOWN_DEVS.length; j++) {
+        if (fuzzyMatch(leftPart, KNOWN_DEVS[j])) {
+          matchedDev = KNOWN_DEVS[j];
+          break;
+        }
       }
     }
 
@@ -368,44 +452,62 @@ function parseDeviationsFromText(text) {
         matchQuality: 'medium'
       };
 
-      // Look for stars in nearby lines
-      for (var k = Math.max(0, i-2); k <= Math.min(lines.length-1, i+3); k++) {
+      // Scan nearby lines for stats and traits
+      for (var k = Math.max(0, i-2); k <= Math.min(lines.length-1, i+4); k++) {
         if (k === i) continue;
         var check = lines[k];
-        var stars = check.match(/★+/g) || check.match(/\*/g) || [];
+        var checkLower = check.toLowerCase();
+
+        // Stars (★★★★★)
+        var stars = check.match(/★+/g) || [];
         if (stars.length > 0) {
-          if (check.toLowerCase().indexOf('skill') >= 0 || check.toLowerCase().indexOf('⭐') >= 0) {
+          if (checkLower.indexOf('skill') >= 0 || checkLower.indexOf('⭐') >= 0) {
             dev.skill = Math.min(5, Math.max(1, stars.length));
-          } else if (check.toLowerCase().indexOf('activ') >= 0 || check.toLowerCase().indexOf('act') >= 0) {
+          } else if (checkLower.indexOf('activ') >= 0) {
             dev.activity = Math.min(5, Math.max(1, stars.length));
           }
         }
-        // Try numeric skill/activity
+        // Numeric S/5 or A/5
         var numMatch = check.match(/S[:\s]*(\d)/i) || check.match(/Skill[:\s]*(\d)/i);
         if (numMatch) dev.skill = Math.min(5, Math.max(1, parseInt(numMatch[1])));
         var actMatch = check.match(/A[:\s]*(\d)/i) || check.match(/Act[:\s]*(\d)/i);
         if (actMatch) dev.activity = Math.min(5, Math.max(1, parseInt(actMatch[1])));
-        // Try star count (★ counts)
+        // ★ counts
         var starCount = (check.match(/★/g) || []).length;
         if (starCount > 0 && starCount <= 5) {
-          if (check.toLowerCase().indexOf('skill') >= 0) dev.skill = starCount;
-          else if (check.toLowerCase().indexOf('activ') >= 0) dev.activity = starCount;
+          if (checkLower.indexOf('skill') >= 0) dev.skill = starCount;
+          else if (checkLower.indexOf('activ') >= 0) dev.activity = starCount;
         }
         // Fuse count
-        var fuseM = lines[k].match(/(\d+)\s*fuse/i);
+        var fuseM = check.match(fusePattern);
         if (fuseM) dev.fuses = parseInt(fuseM[1]);
-        // Trait keywords
+        // Skip "cannot be fused" or "fusion cannot" lines for trait detection
+        if (checkLower.indexOf('cannot') >= 0 && checkLower.indexOf('fuse') >= 0) continue;
+        // Trait keywords — resolve truncated versions first
         for (var t = 0; t < TRAIT_KEYWORDS.length; t++) {
-          if (check.toLowerCase().indexOf(TRAIT_KEYWORDS[t].toLowerCase()) >= 0) {
-            var info = getTraitInfo(TRAIT_KEYWORDS[t]);
+          var rawTrait = TRAIT_KEYWORDS[t];
+          var resolvedTrait = resolveTruncation(rawTrait);
+          if (checkLower.indexOf(rawTrait.toLowerCase()) >= 0 ||
+              checkLower.indexOf(resolvedTrait.toLowerCase()) >= 0 ||
+              resolvedTrait.toLowerCase().startsWith(rawTrait.toLowerCase())) {
+            var info = getTraitInfo(resolvedTrait) || getTraitInfo(rawTrait);
             if (info && dev.traits.indexOf(info.n) < 0 && dev.traits.length < 3) {
               dev.traits.push(info.n);
             }
           }
         }
+        // Also scan for any known trait partial match
+        for (var ti = 0; ti < TRAITS.length; ti++) {
+          var tn = TRAITS[ti].n;
+          if (checkLower.indexOf(tn.toLowerCase()) >= 0) {
+            if (dev.traits.indexOf(tn) < 0 && dev.traits.length < 3 && tn !== 'Aberrant Progeny') {
+              dev.traits.push(tn);
+            }
+          }
+        }
       }
 
-      // If we found traits, mark as high quality
+      // Quality score
       if (dev.traits.length > 0) dev.matchQuality = 'high';
 
       deviations.push(dev);
@@ -413,17 +515,22 @@ function parseDeviationsFromText(text) {
       continue;
     }
 
-    // Try to detect by trait keywords alone
+    // ── 2. Skip non-deviation lines (trait-only, fusion-cannot-be-fused, etc.) ──
+    var skipLine = false;
+    if (lower.indexOf('cannot be fused') >= 0 || lower.indexOf('fusion cannot') >= 0) skipLine = true;
+    if (lower.indexOf('withdraw') >= 0 || lower.indexOf('equip') >= 0 || lower.indexOf('skill rating') >= 0 || lower.indexOf('activity rating') >= 0) skipLine = true;
+    if (skipLine) { i++; continue; }
+
+    // ── 3. Trait-only detection (for traits without explicit deviation name nearby) ──
     for (var t = 0; t < TRAIT_KEYWORDS.length; t++) {
-      if (lower.indexOf(TRAIT_KEYWORDS[t].toLowerCase()) >= 0) {
-        var info = getTraitInfo(TRAIT_KEYWORDS[t]);
+      var rawTrait = TRAIT_KEYWORDS[t];
+      var resolvedTrait = resolveTruncation(rawTrait);
+      if (lower.indexOf(rawTrait.toLowerCase()) >= 0 ||
+          (resolvedTrait !== rawTrait && lower.indexOf(resolvedTrait.toLowerCase()) >= 0)) {
+        var info = getTraitInfo(resolvedTrait) || getTraitInfo(rawTrait);
         if (info) {
-          // Check if this trait's vfor (variation for) gives us the deviation name
-          var devName = null;
-          if (info.vfor) {
-            devName = info.vfor;
-          } else {
-            // Check nearby lines for a deviation name
+          var devName = info.vfor || null;
+          if (!devName) {
             for (var n = Math.max(0, i-2); n <= Math.min(lines.length-1, i+2); n++) {
               if (n === i) continue;
               for (var d = 0; d < KNOWN_DEVS.length; d++) {
@@ -435,9 +542,7 @@ function parseDeviationsFromText(text) {
               if (devName) break;
             }
           }
-
           if (devName) {
-            // Check if we already added this deviation
             var existing = deviations.filter(function(x){ return x.species === devName; })[0];
             if (existing && existing.traits.indexOf(info.n) < 0 && existing.traits.length < 3) {
               existing.traits.push(info.n);
@@ -463,7 +568,6 @@ function fuzzyMatch(a, b) {
   a = a.toLowerCase().replace(/[^a-z0-9]/g,'');
   b = b.toLowerCase().replace(/[^a-z0-9]/g,'');
   if (a.indexOf(b) >= 0 || b.indexOf(a) >= 0) return true;
-  // Levenshtein-like quick check
   if (Math.abs(a.length - b.length) > 3) return false;
   var matches = 0;
   for (var j = 0; j < b.length; j++) {
