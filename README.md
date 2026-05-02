@@ -7,7 +7,7 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 ## Download
 
 **Android APK** — install directly on your phone:  
-👉 [DeviationMatrix-android.apk](https://zo.pub/tester009/dm-apk/DeviationMatrix-android.apk) (4.0 MB)
+👉 [DeviationMatrix-android.apk](https://tester009.zo.space/DeviationMatrix.apk) (4.0 MB)
 
 **Web app** — works in any browser, no install needed:  
 👉 [https://chadit09.github.io/Deviation-Matrix](https://chadit09.github.io/Deviation-Matrix)
@@ -29,6 +29,20 @@ A browser-based + mobile app tool for the survival game **Once Human** that help
 - **Push notifications** when the 5-minute fusion timer completes (even if the app is in the background)
 - **Haptic feedback** on button presses
 - **Installable** — add to home screen for a native app feel
+
+---
+
+## What's New (v4.6 — May 2026)
+
+### Screenshot OCR Import
+- **Scan game cards directly** — take a screenshot of any deviation card and the app reads it automatically using on-device OCR (Tesseract.js, no API key needed)
+- Parses deviation name, type, skill ★, activity ★, fuse count, and traits
+- Shows an editable preview before adding to inventory
+
+### Build Code Improvements
+- Build codes now **auto-copy on click** with a "Copied!" confirmation
+- Added a **Load Code** input field in the same modal — paste any shared build code to restore it instantly
+- Supports both the new compact Base64 format and legacy formats
 
 ---
 
