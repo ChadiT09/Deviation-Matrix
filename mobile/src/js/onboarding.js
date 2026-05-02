@@ -416,13 +416,12 @@
   }
 
   function endTour() {
-    [overlay, spotlight, card, ring].forEach(el => el && el.remove());
+    [overlay, spotlight, card, ring].forEach(function(el) { if (el) el.remove(); });
     overlay = spotlight = card = ring = null;
     localStorage.setItem('dm_tour_done', '1');
-
-    // Restore launch button
-    addLaunchButton();
+    return; // REMOVED: addLaunchButton restored the button blocking clicks
   }
+
 
   /* ── Launch button (persistent) ─────────────────────────── */
   function addLaunchButton() {
@@ -436,8 +435,9 @@
 
   /* ── Auto-launch on first visit ──────────────────────────── */
   window.addEventListener('DOMContentLoaded', () => {
-    addLaunchButton();
-    if (!localStorage.getItem('dm_tour_done')) {
+    // Only auto-start tour on direct visits to the root URL (no hash)
+    // Hash navigation should land directly on the intended tab without the tour interfering
+    if (!localStorage.getItem('dm_tour_done') && !location.hash) {
       setTimeout(startTour, 600);
     }
   });
