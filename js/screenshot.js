@@ -258,16 +258,60 @@ function showCardResults(parsed) {
       '<div class="ocr-card-name">' + parsed.name + '</div>' +
       '<div class="ocr-card-type"><span class="type-badge ' + parsed.type + '">' + parsed.type + '</span></div>' +
       '<div class="ocr-card-stats">' +
-        '<div class="ocr-stat"><span class="ocr-stat-lbl">SKILL</span><span class="ocr-stars">' + stars(parsed.skill) + '</span></div>' +
-        '<div class="ocr-stat"><span class="ocr-stat-lbl">ACTIVITY</span><span class="ocr-stars">' + stars(parsed.activity) + '</span></div>' +
-        '<div class="ocr-stat"><span class="ocr-stat-lbl">FUSES</span><span class="ocr-stars">' + parsed.fuses + '</span></div>' +
+        '<div class="ocr-stat"><span class="ocr-stat-lbl">SKILL</span><span class="ocr-stars" id="ocr-sk">' + stars(parsed.skill) + '</span></div>' +
+        '<div class="ocr-stat"><span class="ocr-stat-lbl">ACTIVITY</span><span class="ocr-stars" id="ocr-ac">' + stars(parsed.activity) + '</span></div>' +
+        '<div class="ocr-stat"><span class="ocr-stat-lbl">FUSES</span><span class="ocr-stars" id="ocr-fuses">' + parsed.fuses + '</span></div>' +
       '</div>' +
-      '<div class="ocr-card-traits"><span class="ocr-stat-lbl">TRAITS</span><div style="margin-top:4px">' + traitHtml + '</div></div>' +
+      '<div class="ocr-card-traits"><span class="ocr-stat-lbl">TRAITS</span><div style="margin-top:4px" id="ocr-traits">' + traitHtml + '</div></div>' +
     '</div>' +
-    '<div class="ocr-confirm-note">Review the data above — edit manually if needed before adding.</div>';
+    '<div class="ocr-confirm-note">Edit values below if needed, then tap ADD.</div>' +
+    '<div id="ocr-edit" style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td)">SKILL</label>' +
+        '<div class="ss" id="ocr-sk-edit"></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td)">ACTIVITY</label>' +
+        '<div class="ss" id="ocr-ac-edit"></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td)">FUSES</label>' +
+        '<select id="ocr-fuses-edit" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px">' +
+          '<option value="1">1 — Fresh</option><option value="0">0 — Fodder</option>' +
+        '</select>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td)">TRAITS</label>' +
+        '<div style="display:flex;flex-direction:column;gap:4px;flex:1">' +
+          '<input type="text" id="ocr-trait-0" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 1">' +
+          '<input type="text" id="ocr-trait-1" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 2">' +
+          '<input type="text" id="ocr-trait-2" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 3">' +
+        '</div>' +
+      '</div>' +
+    '</div>';
 
+  // Init star editors with parsed values; store refs for confirmOcrImport to read
   window._ocrParsed = parsed;
+  mkStars('ocr-sk-edit', parsed.skill, function(v) {
+    window._ocrParsed.skill = v;
+    updateOcrStars('ocr-sk', v);
+  });
+  mkStars('ocr-ac-edit', parsed.activity, function(v) {
+    window._ocrParsed.activity = v;
+    updateOcrStars('ocr-ac', v);
+  });
+  document.getElementById('ocr-fuses-edit').value = parsed.fuses;
+  // Pre-fill trait inputs
+  parsed.traits.forEach(function(t, i) {
+    var el = document.getElementById('ocr-trait-' + i);
+    if (el) el.value = t;
+  });
   document.getElementById('ocr-actions').style.display = 'block';
+}
+
+function updateOcrStars(elId, v) {
+  var el = document.getElementById(elId);
+  if (el) el.textContent = '★'.repeat(v) + '☆'.repeat(5 - v);
 }
 
 // ── Step 5: Confirm & import ──
@@ -275,15 +319,31 @@ function confirmOcrImport() {
   var parsed = window._ocrParsed;
   if (!parsed) return;
 
+  // Read edited values from the manual edit form
+  var skillEl = document.getElementById('ocr-sk-edit');
+  var actEl = document.getElementById('ocr-ac-edit');
+  var fusesEl = document.getElementById('ocr-fuses-edit');
+  var trait0 = document.getElementById('ocr-trait-0');
+  var trait1 = document.getElementById('ocr-trait-1');
+  var trait2 = document.getElementById('ocr-trait-2');
+
+  var editedSkill = skillEl ? parseInt(skillEl.dataset.val || parsed.skill) : parsed.skill;
+  var editedAct = actEl ? parseInt(actEl.dataset.val || parsed.activity) : parsed.activity;
+  var editedFuses = fusesEl ? parseInt(fusesEl.value) : parsed.fuses;
+  var editedTraits = [];
+  [trait0, trait1, trait2].forEach(function(el) {
+    if (el && el.value.trim()) editedTraits.push(el.value.trim());
+  });
+
   var dev = {
     id: Date.now(),
     name: parsed.name,
     species: parsed.species,
     type: parsed.type,
-    skill: parsed.skill,
-    activity: parsed.activity,
-    fuses: parsed.fuses,
-    traits: parsed.traits,
+    skill: editedSkill,
+    activity: editedAct,
+    fuses: editedFuses,
+    traits: editedTraits,
     notes: 'screenshot import'
   };
 
