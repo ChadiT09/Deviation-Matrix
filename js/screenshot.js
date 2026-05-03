@@ -255,8 +255,8 @@ function showCardResults(parsed) {
 
   resultsEl.innerHTML =
     '<div class="ocr-card-preview">' +
-      '<div class="ocr-card-name">' + parsed.name + '</div>' +
-      '<div class="ocr-card-type"><span class="type-badge ' + parsed.type + '">' + parsed.type + '</span></div>' +
+      '<div class="ocr-card-name" id="ocr-card-name">' + parsed.name + '</div>' +
+      '<div class="ocr-card-type"><span class="type-badge ' + parsed.type + '" id="ocr-type-badge">' + parsed.type + '</span></div>' +
       '<div class="ocr-card-stats">' +
         '<div class="ocr-stat"><span class="ocr-stat-lbl">SKILL</span><span class="ocr-stars" id="ocr-sk">' + stars(parsed.skill) + '</span></div>' +
         '<div class="ocr-stat"><span class="ocr-stat-lbl">ACTIVITY</span><span class="ocr-stars" id="ocr-ac">' + stars(parsed.activity) + '</span></div>' +
@@ -266,6 +266,23 @@ function showCardResults(parsed) {
     '</div>' +
     '<div class="ocr-confirm-note">Edit values below if needed, then tap ADD.</div>' +
     '<div id="ocr-edit" style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
+
+      // Deviation name — searchable dropdown
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td)">NAME</label>' +
+        '<div class="dd-wrap" style="flex:1">' +
+          '<div class="dd-input" id="ocr-name-dd-trigger" onclick="openOcrNameDD()">' +
+            '<input type="text" id="ocr-name-display" value="' + parsed.name + '" placeholder="Search deviation..." ' +
+              'style="cursor:pointer;background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px;width:100%" ' +
+              'oninput="renderOcrNameDD(this.value)" onblur="closeOcrNameDDDelayed()">' +
+            '<span class="dd-arrow">&#x25BC;</span>' +
+          '</div>' +
+          '<div class="dd-panel" id="ocr-name-dd-panel" style="min-width:200px;max-height:220px;overflow-y:auto">' +
+            '<div class="dd-list" id="ocr-name-dd-list" style="max-height:180px;overflow-y:auto"></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
       '<div style="display:flex;align-items:center;gap:8px">' +
         '<label style="width:70px;font-size:11px;color:var(--td)">SKILL</label>' +
         '<div class="ss" id="ocr-sk-edit"></div>' +
@@ -280,18 +297,55 @@ function showCardResults(parsed) {
           '<option value="1">1 — Fresh</option><option value="0">0 — Fodder</option>' +
         '</select>' +
       '</div>' +
-      '<div style="display:flex;align-items:center;gap:8px">' +
-        '<label style="width:70px;font-size:11px;color:var(--td)">TRAITS</label>' +
-        '<div style="display:flex;flex-direction:column;gap:4px;flex:1">' +
-          '<input type="text" id="ocr-trait-0" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 1">' +
-          '<input type="text" id="ocr-trait-1" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 2">' +
-          '<input type="text" id="ocr-trait-2" style="background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px" placeholder="Trait 3">' +
+
+      // Trait slots — filterable dropdowns
+      '<div style="display:flex;align-items:flex-start;gap:8px">' +
+        '<label style="width:70px;font-size:11px;color:var(--td);padding-top:4px">TRAITS</label>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;flex:1">' +
+          '<div class="dd-wrap">' +
+            '<div class="dd-input" id="ocr-trait-dd-0-trigger" onclick="openOcrTraitDD(0)">' +
+              '<input type="text" id="t-disp-ocr-0" placeholder="Slot 1 — General/Variation" readonly ' +
+                'style="cursor:pointer;background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px;width:100%">' +
+              '<span class="dd-arrow">&#x25BC;</span>' +
+            '</div>' +
+            '<div class="dd-panel" id="trait-panel-ocr-0">' +
+              '<div class="dd-search"><input type="text" id="t-srch-ocr-0" placeholder="Search traits..." oninput="renderOcrTraitDD(0)"></div>' +
+              '<div class="dd-cats" id="t-cats-ocr-0"></div>' +
+              '<div class="dd-list" id="t-list-ocr-0"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dd-wrap">' +
+            '<div class="dd-input" id="ocr-trait-dd-1-trigger" onclick="openOcrTraitDD(1)">' +
+              '<input type="text" id="t-disp-ocr-1" placeholder="Slot 2 — Type-Specific" readonly ' +
+                'style="cursor:pointer;background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px;width:100%">' +
+              '<span class="dd-arrow">&#x25BC;</span>' +
+            '</div>' +
+            '<div class="dd-panel" id="trait-panel-ocr-1">' +
+              '<div class="dd-search"><input type="text" id="t-srch-ocr-1" placeholder="Search traits..." oninput="renderOcrTraitDD(1)"></div>' +
+              '<div class="dd-cats" id="t-cats-ocr-1"></div>' +
+              '<div class="dd-list" id="t-list-ocr-1"></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dd-wrap">' +
+            '<div class="dd-input" id="ocr-trait-dd-2-trigger" onclick="openOcrTraitDD(2)">' +
+              '<input type="text" id="t-disp-ocr-2" placeholder="Slot 3 — Deviated (Animal/Furniture)" readonly ' +
+                'style="cursor:pointer;background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:4px 8px;border-radius:2px;font-size:12px;width:100%">' +
+              '<span class="dd-arrow">&#x25BC;</span>' +
+            '</div>' +
+            '<div class="dd-panel" id="trait-panel-ocr-2">' +
+              '<div class="dd-search"><input type="text" id="t-srch-ocr-2" placeholder="Search traits..." oninput="renderOcrTraitDD(2)"></div>' +
+              '<div class="dd-cats" id="t-cats-ocr-2"></div>' +
+              '<div class="dd-list" id="t-list-ocr-2"></div>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
 
-  // Init star editors with parsed values; store refs for confirmOcrImport to read
+  // Init star editors; store refs for confirmOcrImport
   window._ocrParsed = parsed;
+  window._ocrTraits = [null, null, null];
+
   mkStars('ocr-sk-edit', parsed.skill, function(v) {
     window._ocrParsed.skill = v;
     updateOcrStars('ocr-sk', v);
@@ -301,13 +355,118 @@ function showCardResults(parsed) {
     updateOcrStars('ocr-ac', v);
   });
   document.getElementById('ocr-fuses-edit').value = parsed.fuses;
-  // Pre-fill trait inputs
+
+  // Pre-fill trait dropdowns with parsed traits
   parsed.traits.forEach(function(t, i) {
-    var el = document.getElementById('ocr-trait-' + i);
-    if (el) el.value = t;
+    if (i < 3) {
+      window._ocrTraits[i] = TRAITS.find(function(tr) { return tr.n === t; }) || null;
+      var el = document.getElementById('t-disp-ocr-' + i);
+      if (el) el.value = t;
+    }
   });
+
   document.getElementById('ocr-actions').style.display = 'block';
 }
+
+// ── Deviation name dropdown (OCR) ──
+function openOcrNameDD() {
+  renderOcrNameDD('');
+}
+
+function renderOcrNameDD(query) {
+  var panel = document.getElementById('ocr-name-dd-panel');
+  var list = document.getElementById('ocr-name-dd-list');
+  var q = (query || '').toLowerCase();
+  var filtered = DEVS.filter(function(d) {
+    return !q || d.n.toLowerCase().indexOf(q) >= 0;
+  });
+  list.innerHTML = filtered.map(function(d) {
+    return '<div class="dd-item" onclick="pickOcrDev(\'' + d.n.replace(/'/g, "\\'") + '\',\'' + d.t + '\')">' +
+      '<div style="flex:1"><div class="dd-item-name">' + d.n + '</div><div class="dd-item-meta">' + d.t + '</div></div>' +
+      '<span class="type-badge ' + d.t + '">' + d.t + '</span></div>';
+  }).join('');
+}
+
+function pickOcrDev(name, type) {
+  window._ocrParsed.name = name;
+  window._ocrParsed.species = name;
+  window._ocrParsed.type = type;
+  document.getElementById('ocr-name-display').value = name;
+  document.getElementById('ocr-type-badge').textContent = type;
+  document.getElementById('ocr-type-badge').className = 'type-badge ' + type;
+  document.getElementById('ocr-card-name').textContent = name;
+  closeOcrNameDD();
+}
+
+function closeOcrNameDDDelayed() {
+  setTimeout(function() {
+    var panel = document.getElementById('ocr-name-dd-panel');
+    if (panel) panel.classList.remove('open');
+  }, 200);
+}
+
+// ── Trait dropdowns (OCR) ──
+var ocrTraitCatFilters = ['', '', ''];
+
+function openOcrTraitDD(idx) {
+  renderOcrTraitDD(idx);
+  document.getElementById('trait-panel-ocr-' + idx).classList.add('open');
+}
+
+function renderOcrTraitDD(idx) {
+  var srch = ((document.getElementById('t-srch-ocr-' + idx) || {}).value || '').toLowerCase();
+  var cf = ocrTraitCatFilters[idx] || 'All';
+
+  // Slot mapping: 0→S1, 1→S2, 2→S3
+  var slots = [idx + 1]; // 0→[1], 1→[2], 2→[3]
+  var available = TRAITS.filter(function(t) { return slots.indexOf(t.s) >= 0; });
+
+  var rawCats = ['All'];
+  available.forEach(function(t) { if (rawCats.indexOf(t.cat) < 0) rawCats.push(t.cat); });
+
+  var catsEl = document.getElementById('t-cats-ocr-' + idx);
+  if (catsEl) catsEl.innerHTML = rawCats.map(function(c) {
+    return '<span class="dd-cat ' + (cf === c ? 'act' : '') +
+      '" onclick="event.stopPropagation();ocrTraitCatFilters[' + idx + ']=\'' + c +
+      '\';renderOcrTraitDD(' + idx + ')">' + c + '</span>';
+  }).join('');
+
+  var filtered = available;
+  if (cf !== 'All') filtered = filtered.filter(function(t) { return t.cat === cf; });
+  if (srch) filtered = filtered.filter(function(t) {
+    return t.n.toLowerCase().indexOf(srch) >= 0 || t.d.toLowerCase().indexOf(srch) >= 0;
+  });
+
+  var listEl = document.getElementById('t-list-ocr-' + idx);
+  if (!listEl) return;
+  if (!filtered.length) { listEl.innerHTML = '<div class="dd-empty">No traits found</div>'; return; }
+
+  var cur = window._ocrTraits[idx] ? window._ocrTraits[idx].n : '';
+  listEl.innerHTML = filtered.map(function(t) {
+    return '<div class="dd-item ' + (t.n === cur ? 'sel' : '') +
+      '" onclick="pickOcrTrait(' + idx + ',\'' + t.n.replace(/'/g, "\\'") + '\')">' +
+      '<div style="flex:1"><div class="dd-item-name">' + t.n + ' <span class="slot-badge">S' + t.s + '</span></div>' +
+      '<div class="dd-item-meta">' + t.d + '</div></div>' +
+      '<span class="dd-item-badge tt ' + t.type + '">' + t.type + '</span></div>';
+  }).join('');
+}
+
+function pickOcrTrait(idx, name) {
+  var info = TRAITS.find(function(t) { return t.n === name; });
+  window._ocrTraits[idx] = info;
+  document.getElementById('t-disp-ocr-' + idx).value = name;
+  document.getElementById('trait-panel-ocr-' + idx).classList.remove('open');
+}
+
+// Close OCR trait panels on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dd-wrap')) {
+    [0, 1, 2].forEach(function(i) {
+      var p = document.getElementById('trait-panel-ocr-' + i);
+      if (p) p.classList.remove('open');
+    });
+  }
+});
 
 function updateOcrStars(elId, v) {
   var el = document.getElementById(elId);
@@ -319,41 +478,35 @@ function confirmOcrImport() {
   var parsed = window._ocrParsed;
   if (!parsed) return;
 
-  // Read edited values from the manual edit form
-  var skillEl = document.getElementById('ocr-sk-edit');
-  var actEl = document.getElementById('ocr-ac-edit');
-  var fusesEl = document.getElementById('ocr-fuses-edit');
-  var trait0 = document.getElementById('ocr-trait-0');
-  var trait1 = document.getElementById('ocr-trait-1');
-  var trait2 = document.getElementById('ocr-trait-2');
+  var editedSkill  = parseInt(document.getElementById('ocr-sk-edit').dataset.val || parsed.skill);
+  var editedAct    = parseInt(document.getElementById('ocr-ac-edit').dataset.val || parsed.activity);
+  var editedFuses  = parseInt(document.getElementById('ocr-fuses-edit').value) || parsed.fuses;
 
-  var editedSkill = skillEl ? parseInt(skillEl.dataset.val || parsed.skill) : parsed.skill;
-  var editedAct = actEl ? parseInt(actEl.dataset.val || parsed.activity) : parsed.activity;
-  var editedFuses = fusesEl ? parseInt(fusesEl.value) : parsed.fuses;
-  var editedTraits = [];
-  [trait0, trait1, trait2].forEach(function(el) {
-    if (el && el.value.trim()) editedTraits.push(el.value.trim());
-  });
+  // Read traits from the dropdown-backed display inputs
+  var editedTraits = [0, 1, 2].map(function(i) {
+    var el = document.getElementById('t-disp-ocr-' + i);
+    return el ? el.value.trim() : '';
+  }).filter(Boolean);
 
   var dev = {
-    id: Date.now(),
-    name: parsed.name,
-    species: parsed.species,
-    type: parsed.type,
-    skill: editedSkill,
+    id:       Date.now(),
+    name:     parsed.name,
+    species:  parsed.species,
+    type:     parsed.type,
+    skill:    editedSkill,
     activity: editedAct,
-    fuses: editedFuses,
-    traits: editedTraits,
-    notes: 'screenshot import'
+    fuses:    editedFuses,
+    traits:   editedTraits,
+    notes:    'screenshot import'
   };
 
   inv.push(dev);
   save();
   renderInv();
   closeModalDirect();
-  window._ocrParsed = null;
+  window._ocrParsed  = null;
+  window._ocrTraits  = [null, null, null];
 
-  // Switch to inventory tab to show the new entry
   var invTabBtn = document.querySelector('.tb[onclick*="inventory"]');
   if (invTabBtn) invTabBtn.click();
 }
