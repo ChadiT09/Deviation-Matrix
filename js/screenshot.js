@@ -370,6 +370,8 @@ function showCardResults(parsed) {
 
 // ── Deviation name dropdown (OCR) ──
 function openOcrNameDD() {
+  var panel = document.getElementById('ocr-name-dd-panel');
+  if (panel) panel.classList.add('open');
   renderOcrNameDD('');
 }
 
