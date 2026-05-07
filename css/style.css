@@ -218,6 +218,7 @@ select option { background: #071525; }
   display: flex;
   flex-direction: column;
   gap: 0;
+  overflow: hidden;
 }
 .dc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--c), transparent); }
 .dc::after  { content: ''; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 10px 10px 0; border-color: transparent var(--bd) transparent transparent; }
@@ -231,6 +232,7 @@ select option { background: #071525; }
   border-radius: 3px 3px 0 0;
   margin: -13px -13px 10px -13px;
   display: block;
+  max-height: 120px;
 }
 .dc-img.fallback {
   background: rgba(0,245,255,0.04);
