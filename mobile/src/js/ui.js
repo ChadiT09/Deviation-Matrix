@@ -82,11 +82,13 @@ function openDD(which) {
   var isOpen = panel.classList.contains('open');
   document.querySelectorAll('.dd-panel').forEach(function(p) { p.classList.remove('open'); });
   if (!isOpen) {
+    // Reset category filter to 'All' every time the dropdown opens
+    ddCatFilter[which] = 'All';
     panel.classList.add('open');
     renderDevDD(which);
     setTimeout(function() {
       var s = document.getElementById(which + '-dd-search');
-      if (s) s.focus();
+      if (s) { s.value = ''; s.focus(); }
     }, 50);
   }
 }
