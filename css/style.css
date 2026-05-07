@@ -228,15 +228,25 @@ select option { background: #071525; }
 .dc-img {
   width: 100%;
   height: 120px;
+  max-height: 120px;
   object-fit: contain;
   border-radius: 3px 3px 0 0;
-  margin: -13px -13px 10px -13px;
-  display: block;
-  max-height: 120px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,245,255,0.03);
+  flex-shrink: 0;
 }
 .dc-img.fallback {
-  background: rgba(0,245,255,0.04);
-  min-height: 80px;
+  min-height: 120px;
+  height: 120px;
+}
+.dc-img.fallback::after {
+  content: 'No Preview';
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  color: var(--td);
 }
 
 /* ════════ STAT BARS ════════ */
