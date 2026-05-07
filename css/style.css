@@ -215,11 +215,27 @@ select option { background: #071525; }
   padding: 13px;
   position: relative;
   transition: border-color .18s;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 .dc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--c), transparent); }
 .dc::after  { content: ''; position: absolute; top: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 10px 10px 0; border-color: transparent var(--bd) transparent transparent; }
 .dc:hover   { border-color: var(--bm); }
 .dn { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 600; color: var(--c); margin-bottom: 4px; letter-spacing: .04em; }
+
+.dc-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 3px 3px 0 0;
+  margin: -13px -13px 10px -13px;
+  display: block;
+}
+.dc-img.fallback {
+  background: rgba(0,245,255,0.04);
+  min-height: 80px;
+}
 
 /* ════════ STAT BARS ════════ */
 .sbw { margin-bottom: 3px; }
@@ -282,6 +298,15 @@ select option { background: #071525; }
 .dd-item-src  { font-size: 9px;  color: var(--ca); font-family: var(--mono); margin-top: 2px; }
 .dd-item-badge { flex-shrink: 0; padding: 1px 5px; font-size: 8px; font-family: var(--mono); border: 1px solid; border-radius: 2px; }
 .dd-empty { padding: 14px 12px; color: var(--tm); font-size: 12px; text-align: center; }
+
+.dd-dev-img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: rgba(0,245,255,0.04);
+}
 
 /* ════════ FUSION SIM LAYOUT ════════ */
 .fl  { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 14px; align-items: start; }

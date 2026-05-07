@@ -114,10 +114,11 @@ function renderDevDD(which) {
 
   listEl.innerHTML = list.map(function(d) {
     return '<div class="dd-item ' + (d.n === cur ? 'sel' : '') +
-      '" onclick="pickDev(\'' + which + '\',\'' + d.n.replace(/'/g, "\\'") + '\',\'' + d.t + '\')">' +
+      '" onclick="selDevDD(\'' + d.n.replace(/'/g, "\\'") + "','" + which + '\')">' +
+      '<img class="dd-dev-img" src="' + getDevImage(d.n) + '" alt="' + d.n + '" onerror="this.style.display=\'none\'">' +
       '<div style="flex:1"><div class="dd-item-name">' + d.n + '</div>' +
       '<div class="dd-item-meta">' + d.t + '</div></div>' +
-      '<span class="type-badge ' + d.t + '">' + d.t + '</span></div>';
+      '<span class="dd-item-badge tt ' + (d.t === 'Combat' ? 'negative' : d.t === 'Territory' ? 'variation' : 'positive') + '">' + d.t + '</span></div>';
   }).join('');
 }
 

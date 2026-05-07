@@ -148,6 +148,7 @@ function renderInv() {
     var div    = document.createElement('div');
     div.className = 'dc';
     div.innerHTML =
+      devImgTag(d.species) +
       '<div class="dn">' + d.name + '</div>' +
       '<div style="font-family:var(--mono);font-size:9px;color:var(--td);margin-bottom:6px">' +
         d.species + ' <span class="type-badge ' + d.type + '">' + d.type + '</span></div>' +

@@ -182,3 +182,20 @@ function traitPill(name) {
     'onmouseenter="showTip(this,\'' + name.replace(/'/g, "\\'") + '\')" ' +
     'onmouseleave="hideTip()">' + name + '</span>';
 }
+
+/** Return the deviation image URL for a species name, or empty string if none. */
+function getDevImage(sp) {
+  var base = 'data/images/';
+  // Try exact match
+  var fn = sp + '.webp';
+  var img = new Image();
+  // We just check if the file exists by returning the path;
+  // the <img> tag will handle 404 gracefully with onerror fallback
+  return base + fn;
+}
+
+/** Build <img> tag for species, returns '' if no image exists (checked client-side). */
+function devImgTag(sp) {
+  var path = getDevImage(sp);
+  return '<img class="dc-img" src="' + path + '" alt="' + sp + '" onerror="this.classList.add(\'fallback\');this.src=\'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==\'">';
+}

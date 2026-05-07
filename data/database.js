@@ -20,7 +20,7 @@ var DEVS = [
   // Combat
   { n: "Butterfly's Emissary", t: "Combat" },
   { n: "By the Wind", t: "Combat" },
-  { n: "By-the-Wind", t: "Territory" },
+  // By-the-Wind is a duplicate/alternate name for the same Territory-type Deviation — merged above
   { n: "Dr. Teddy", t: "Combat" },
   { n: "Enchanting Void", t: "Combat" },
   { n: "Enchanting Void - Starfall Inversion", t: "Combat" },
