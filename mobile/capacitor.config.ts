@@ -5,6 +5,9 @@ const config: CapacitorConfig = {
   appName: "Deviation Matrix",
   webDir: "dist",
   backgroundColor: "#070c12",
+  server: {
+    androidScheme: "https",
+  },
   android: {
     backgroundColor: "#070c12",
     allowMixedContent: true,
